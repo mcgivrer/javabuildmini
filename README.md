@@ -65,10 +65,10 @@ Son utilisation est on ne peut plus simple, à la racine de votre projet, tapez 
 build.sh
 ```
 
-Vous obtiendrez un JAR dans target/build ayant comme nom celui paramétré dans la variable `program_name` en début de script, avec la forme suivante:
+Vous obtiendrez, avec l'exemple de script ci-dessus, un JAR dans target/build ayant comme nom un composé des variable `program_name`et `program_version` en début de script, avec la forme suivante:
 
 ```bash
-target/build/[project_name]-x.y.z.jar
+target/build/step0-1.0.0.jar
 ```
 
 La classe principale point d’entrée du jar doit être définie dans la sera alors variable `main_class`.
