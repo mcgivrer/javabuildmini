@@ -1,37 +1,41 @@
 # README
 
 
-
-    Vous avez quelques classes java à builder et vous galérez avec la commande javac et java ?
+Vous avez quelques classes java à builder et vous galérez avec la commande javac et java ?
 
 Je vous propose un mini script permettant de gagner du temps sur des projet TRES simple à base JDK.
 
-ATTENTION le script proposé ici ne prend pas en charge des librairies externes et leur dépendances, seul le JDK est considéré lors du build. Une version plus évoluée d’une scripts de build sera proposé ultérieurement.
+>ATTENTION le script proposé ici ne prend pas en charge des librairies externes et leur dépendances, seul le JDK est considéré lors du build. Une version plus évoluée d’une scripts de build sera proposé ultérieurement.
 
 Votre projet comportant vos classes à compiler doit respecter la structure de fichier suivante:
 ```text
 [MONPROJET]
 |_ src
 |  |_ main
-|     |_ java
-|     |  |_ MaClasse.java
-|     |_ resources
-|        |_ maConfig.properties
+|  |  |_ java
+|  |  |  |_ [MA_CLASSE].java
+|  |  |_ resources
+|  |     |_ maConfig.properties
+|  |_ target
+|     |_ build
+|        |_ [MON_PROJET]-[MA_VERSION].jar
 |_ build.sh
 |_ REAMDE.md
 |_ LICENSE
 |_ .sdkmanrc
 |_ .gitignore
 ```
+
 Vous pouvez constater que la structure est fortement inspirée d’un porjet MAVEN standard, où seule la partie code SRC/MAIN est utilisée.
 
-Mon script build.sh, construit autour de cette structure permet à tout développeur java de rapidemetn le prendre en main. Il est présenté ci-dessous:
+Le script `build.sh` que je propose ici, construit autour de cette structure, permet à tout développeur java de rapidement le prendre en main. Il est présenté ci-dessous:
 
 ```bash
 #!/bin/bash
-project_name=step4
+project_name=step0
+project_version=1.0.0
 main_class=tutorials.App
-echo "build project ${project_name}..."
+echo "build project ${project_name} version ${project_version}..."
 echo ---
 echo "clean previous build..."
 rm -vrf target/
@@ -50,16 +54,18 @@ echo "build jar..."
 for app in ${main_class}
 do
   echo ">> for ${project_name}.$app..."
-  jar cvfe target/build/${project_name}-1.0.4.jar $app -C target/classes .
+  jar cvfe target/build/${project_name}-${project_version}.jar $app -C target/classes .
   echo "done."
 done
 ```
+
 Son utilisation est on ne peut plus simple, à la racine de votre projet, tapez simplement la ligne de commande ci-dessous:
 
 ```bash
 build.sh
 ```
-Vous obtiendrez un JAR ayant comme nom celui paramétré dans la variable `program_name` en début de script, avec la forme suivante:
+
+Vous obtiendrez un JAR dans target/build ayant comme nom celui paramétré dans la variable `program_name` en début de script, avec la forme suivante:
 
 ```bash
 target/build/[project_name]-x.y.z.jar
@@ -67,7 +73,8 @@ target/build/[project_name]-x.y.z.jar
 
 La classe principale point d’entrée du jar doit être définie dans la sera alors variable `main_class`.
 
-NOTE : Pensez à changer la version et le classe principale dans le script avant compilation.
+>NOTE : Pensez à changer la version et le nom du projet (`project_name`, `project_version`) et la  classe principale `main_class` dans le script avant compilation.
 
 Bon Code !
+
 McG.
