@@ -1,5 +1,6 @@
 #!/bin/bash
 project_name=step0
+main_class=tutorials.App
 echo "build project..."
 echo ---
 echo "clean previous build..."
@@ -16,7 +17,7 @@ cp -vr src/main/resources/* target/classes/
 echo "done."
 echo ---
 echo "build jar..."
-for app in App
+for app in ${main_class}
 do
   echo ">> for ${project_name}.$app..."
   jar cvfe target/build/${project_name}-1.0.0.jar $app -C target/classes .
