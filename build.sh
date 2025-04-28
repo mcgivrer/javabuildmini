@@ -22,6 +22,6 @@ echo "build jar..."
 for app in ${main_class}
 do
   echo ">> for ${project_name}.$app..."
-  jar cvfe target/build/${project_name}-${project_version}.jar $app -C target/classes .
+  jar cvfe target/build/${project_name}-$app-${project_version}.jar $app -C target/classes .
   echo "done."
 done
