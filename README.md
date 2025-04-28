@@ -1,5 +1,73 @@
 # README
 
-This is the step 0 of the new Java tutorial series.
 
+
+    Vous avez quelques classes java à builder et vous galérez avec la commande javac et java ?
+
+Je vous propose un mini script permettant de gagner du temps sur des projet TRES simple à base JDK.
+
+ATTENTION le script proposé ici ne prend pas en charge des librairies externes et leur dépendances, seul le JDK est considéré lors du build. Une version plus évoluée d’une scripts de build sera proposé ultérieurement.
+
+Votre projet comportant vos classes à compiler doit respecter la structure de fichier suivante:
+```text
+[MONPROJET]
+|_ src
+|  |_ main
+|     |_ java
+|     |  |_ MaClasse.java
+|     |_ resources
+|        |_ maConfig.properties
+|_ build.sh
+|_ REAMDE.md
+|_ LICENSE
+|_ .sdkmanrc
+|_ .gitignore
+```
+Vous pouvez constater que la structure est fortement inspirée d’un porjet MAVEN standard, où seule la partie code SRC/MAIN est utilisée.
+
+Mon script build.sh, construit autour de cette structure permet à tout développeur java de rapidemetn le prendre en main. Il est présenté ci-dessous:
+
+```bash
+#!/bin/bash
+project_name=step4
+main_class=tutorials.App
+echo "build project ${project_name}..."
+echo ---
+echo "clean previous build..."
+rm -vrf target/
+mkdir -vp target/{build,classes}
+echo "done."
+echo ---
+echo "sources files:"
+find src/main/java src/main/resources -name "*.java"
+echo ---
+echo "compile..."
+javac -d target/classes $(find src/main/java src/main/resources -name "*.java")
+cp -vr src/main/resources/* target/classes/
+echo "done."
+echo ---
+echo "build jar..."
+for app in ${main_class}
+do
+  echo ">> for ${project_name}.$app..."
+  jar cvfe target/build/${project_name}-1.0.4.jar $app -C target/classes .
+  echo "done."
+done
+```
+Son utilisation est on ne peut plus simple, à la racine de votre projet, tapez simplement la ligne de commande ci-dessous:
+
+```bash
+build.sh
+```
+Vous obtiendrez un JAR ayant comme nom celui paramétré dans la variable `program_name` en début de script, avec la forme suivante:
+
+```bash
+target/build/[project_name]-x.y.z.jar
+```
+
+La classe principale point d’entrée du jar doit être définie dans la sera alors variable `main_class`.
+
+NOTE : Pensez à changer la version et le classe principale dans le script avant compilation.
+
+Bon Code !
 McG.
