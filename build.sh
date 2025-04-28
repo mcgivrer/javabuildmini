@@ -1,7 +1,9 @@
 #!/bin/bash
 project_name=step0
+project_version=1.0.0
 main_class=tutorials.App
-echo "build project..."
+#
+echo "build project ' ${project_name}' version ${project_version}..."
 echo ---
 echo "clean previous build..."
 rm -vrf target/
@@ -20,6 +22,6 @@ echo "build jar..."
 for app in ${main_class}
 do
   echo ">> for ${project_name}.$app..."
-  jar cvfe target/build/${project_name}-1.0.0.jar $app -C target/classes .
+  jar cvfe target/build/${project_name}-${project_version}.jar $app -C target/classes .
   echo "done."
 done
