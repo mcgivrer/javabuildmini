@@ -10,6 +10,8 @@ project_name=javabuildmini
 project_version=1.0.0
 main_class=tutorials.App
 #
+#--- DO NOT CHANGE THE FOLLOWING LINES ---
+#
 echo "build project ' ${project_name}' version ${project_version}..."
 echo ---
 echo "clean previous build..."

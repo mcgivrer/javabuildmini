@@ -1,13 +1,14 @@
 # README
 
-
 Vous avez quelques classes java à builder et vous galérez avec la commande javac et java ?
 
-Je vous propose un mini script permettant de gagner du temps sur des projet TRES simple à base JDK.
+Je vous propose un mini script permettant de gagner du temps sur des projets TRES simple à base JDK.
 
->**ATTENTION** Le script proposé ici ne prend pas en charge des librairies externes et leur dépendances, seul le JDK est considéré lors du build. Une version plus évoluée d’une scripts de build sera proposé ultérieurement.
+> **ATTENTION** Le script proposé ici ne prend pas en charge des librairies externes et leurs dépendances, seul le JDK
+> est considéré lors du build. Une version plus évoluée d’un script de build sera proposé ultérieurement.
 
-Votre projet comportant vos classes à compiler doit respecter la structure de fichier suivante:
+Votre projet comportant vos classes à compiler doit respecter la structure de fichier suivante :
+
 ```text
 [MONPROJET]
 |_ src
@@ -26,9 +27,11 @@ Votre projet comportant vos classes à compiler doit respecter la structure de f
 |_ .gitignore
 ```
 
-Vous pouvez constater que la structure est fortement inspirée d’un porjet MAVEN standard, où seule la partie code SRC/MAIN est utilisée.
+Vous pouvez constater que la structure est fortement inspirée d’un porjet MAVEN standard, où seule la partie code
+SRC/MAIN est utilisée.
 
-Le script `build.sh` que je propose ici, construit autour de cette structure, permet à tout développeur java de rapidement le prendre en main. Il est présenté ci-dessous:
+Le script `build.sh` que je propose ici, construit autour de cette structure, permet à tout développeur java de
+rapidement le prendre en main. Il est présenté ci-dessous:
 
 ```bash
 #!/bin/bash
@@ -59,13 +62,15 @@ do
 done
 ```
 
-Son utilisation est on ne peut plus simple, à la racine de votre projet, tapez simplement la ligne de commande ci-dessous:
+Son utilisation est on ne peut plus simple, à la racine de votre projet, tapez simplement la ligne de commande
+ci-dessous :
 
 ```bash
 build.sh
 ```
 
-Vous obtiendrez, avec l'exemple de script ci-dessus, un JAR dans target/build ayant comme nom un composé des variable `program_name`et `program_version` en début de script, avec la forme suivante:
+Vous obtiendrez, avec l'exemple de script ci-dessus, un JAR dans target/build ayant comme nom un composé des variables
+`program_name`et `program_version` en début de script, avec la forme suivante :
 
 ```bash
 target/build/step0-App-1.0.0.jar
@@ -73,9 +78,12 @@ target/build/step0-App-1.0.0.jar
 
 La classe principale point d’entrée du jar doit être définie dans la sera alors variable `main_class`.
 
->**NOTE 1** Pensez à changer la version et le nom du projet (`project_name`, `project_version`) et la  classe principale `main_class` dans le script avant compilation.
+> **NOTE 1** Pensez à changer la version et le nom du projet (`project_name`, `project_version`) et la classe principale
+`main_class` dans le script avant compilation.
 
->**TIPS** Vous pouvez également générer plusieurs JAR en spécifiant une liste de classes séparée par des espaces dans la variable `main_class`, "MaClasse1 MaClasse2 Maclasse3", ainsi 3 fichiers JAR, ayant chacun pour point d'entrée une des classes listées, seront créés.
+> **TIPS** Vous pouvez également générer plusieurs JAR en spécifiant une liste de classes séparée par des espaces dans
+> la variable `main_class`, "MaClasse1 MaClasse2 Maclasse3", ainsi 3 fichiers JAR, ayant chacun pour point d'entrée une
+> des classes listées, seront créés.
 
 Bon Code !
 
