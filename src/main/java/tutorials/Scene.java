@@ -12,10 +12,15 @@ public interface Scene {
     default void render(Graphics2D g) {
     }
 
+
     default void dispose() {
     }
 
     List<Entity> getEntities();
 
     String getName();
+
+    World getWorld();
+
+    void add(Entity e);
 }

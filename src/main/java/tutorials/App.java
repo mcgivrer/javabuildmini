@@ -14,7 +14,7 @@ import java.util.ResourceBundle;
 import static java.lang.Thread.sleep;
 import static tutorials.Log.*;
 
-public class App implements KeyListener {
+public class App extends JPanel implements KeyListener {
     public static ResourceBundle messages = ResourceBundle.getBundle("i18n/messages");
     public Configuration config = new Configuration();
     private static int debug = 0;
@@ -28,6 +28,7 @@ public class App implements KeyListener {
     private Renderer renderer;
 
     public App() {
+        super();
         info(App.class, "Start the application %s", messages.getString("app.title"));
     }
 
@@ -56,8 +57,8 @@ public class App implements KeyListener {
 
     public void createWindow(String title, Dimension size) {
         window = new JFrame(title);
-        window.setSize(size);
-        window.setPreferredSize(size);
+        setSize(size);
+        setPreferredSize(size);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.addKeyListener(this);
         window.addWindowListener(new WindowAdapter() {
@@ -72,9 +73,13 @@ public class App implements KeyListener {
                 // to do apply specific operation on resizing.
             }
         });
-
+        window.setContentPane(this);
+        window.setFocusTraversalKeysEnabled(true);
+        window.pack();
         window.setVisible(true);
         window.createBufferStrategy(3);
+        window.setIgnoreRepaint(true);
+        window.requestFocus();
 
         debug(App.class, 1, "Window created.");
     }
@@ -84,7 +89,7 @@ public class App implements KeyListener {
         long startTime = 0, endTime = 0, elapsed = 0;
         do {
             startTime = endTime;
-            update(elapsed);
+            update(elapsed > (1000 / FPS) ? 1 : (1000 / FPS) - elapsed);
             render();
             endTime = System.currentTimeMillis();
             elapsed = endTime - startTime;
@@ -100,30 +105,38 @@ public class App implements KeyListener {
     }
 
     public void update(long elapsed) {
-        AbstractScene.getCurrentScene().getEntities().forEach(e -> {
-            e.setPosition(e.x + (e.dx * elapsed), e.y + (e.dy * elapsed));
-            e.getBehaviors().forEach(b -> b.update(this, e, elapsed));
-            constrainsEntityToWorld(e, windowSize);
-            e.dx *= 0.97;
-            e.dy *= 0.97;
+        Scene scene = AbstractScene.getCurrentScene();
+        World world = scene.getWorld();
+        scene.getEntities().stream().filter(e -> e.getType().equals(PhysicType.DYNAMIC)).forEach(e -> {
+            e.setPosition(
+                    e.x + ((e.dx + world.getGravity().getX()) * elapsed),
+                    e.y + ((e.dy + world.getGravity().getY()) * elapsed));
+            for (Behavior b : e.getBehaviors()) {
+                b.update(this, e, elapsed);
+            }
+            Log.debug(App.class, 5, "entity:%s", e);
+            constrainsEntityToWorld(scene, e);
+
+            // friction in world
+            e.setVelocity(e.dx * world.getFriction(), e.dy * world.getFriction());
         });
     }
 
-    private void constrainsEntityToWorld(Entity e, Dimension windowSize) {
-        if (e.x < 0) {
-            e.x = 0;
+    private void constrainsEntityToWorld(Scene scene, Entity e) {
+        if (e.x < scene.getWorld().getX()) {
+            e.x = scene.getWorld().getX();
             e.dx = 0;
         }
-        if (e.x > windowSize.width - e.width) {
-            e.x = windowSize.width - e.width;
+        if (e.x > scene.getWorld().width - e.width) {
+            e.x = scene.getWorld().width - e.width;
             e.dx = 0;
         }
-        if (e.y < 0) {
-            e.y = 0;
+        if (e.y < scene.getWorld().getY()) {
+            e.y = scene.getWorld().getY();
             e.dy = 0;
         }
-        if (e.y > windowSize.height - e.height) {
-            e.y = windowSize.height - e.height;
+        if (e.y > scene.getWorld().height - e.height) {
+            e.y = scene.getWorld().height - e.height;
             e.dy = 0;
         }
     }
@@ -162,6 +175,7 @@ public class App implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         keys[e.getKeyCode()] = true;
+        debug(App.class, 5, "Key pressed: %d", e.getKeyCode());
     }
 
     @Override

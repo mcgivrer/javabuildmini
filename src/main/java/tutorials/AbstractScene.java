@@ -9,6 +9,7 @@ public class AbstractScene implements Scene {
 
     private static List<Scene> scenes = new ArrayList<>();
     protected final App app;
+    protected World world = new World();
 
     private String name = "default";
     private static Scene currentScene;
@@ -47,6 +48,7 @@ public class AbstractScene implements Scene {
     }
 
     public static void initScene() {
+        currentScene.add(currentScene.getWorld());
         currentScene.init();
     }
 
@@ -63,7 +65,7 @@ public class AbstractScene implements Scene {
 
     }
 
-    protected void add(Entity e) {
+    public void add(Entity e) {
         entities.add(e);
     }
 
@@ -90,4 +92,9 @@ public class AbstractScene implements Scene {
     public String getName() {
         return name;
     }
+
+    public World getWorld() {
+        return world;
+    }
+
 }
