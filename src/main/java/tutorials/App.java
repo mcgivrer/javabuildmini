@@ -17,7 +17,7 @@ public class App implements KeyListener {
     private static boolean exit = false;
     private static final int FPS = 60;
 
-    private boolean[] keys = new boolean[1024];
+    private static boolean[] keys = new boolean[1024];
 
     private JFrame window;
     private static Dimension windowSize = new Dimension(640, 400);
@@ -91,7 +91,6 @@ public class App implements KeyListener {
 
     public void update() {
 
-
     }
 
     public void render() {
@@ -145,6 +144,9 @@ public class App implements KeyListener {
         }
     }
 
+    public static boolean isKeyPressed(int keyCode) {
+        return keys[keyCode];
+    }
 
     public static void setDebug(int d) {
         debug = d;
