@@ -20,7 +20,7 @@ public class Renderer {
         JFrame window = app.getWindow();
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, window.getWidth(), window.getHeight());
-        app.entities.stream().filter(Entity::isActive).forEach(e -> {
+        AbstractScene.getCurrentScene().getEntities().stream().filter(Entity::isActive).forEach(e -> {
             drawEntity(g, e);
 
         });

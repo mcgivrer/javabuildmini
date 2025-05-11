@@ -74,4 +74,11 @@ public class Configuration {
     }
 
 
+    public String[] getStrings(String s, String separator, String s1) {
+        return config.getOrDefault(s, s1).toString().split(separator);
+    }
+
+    public String getString(String key, String defaultValue) {
+        return config.getOrDefault(key, defaultValue).toString();
+    }
 }

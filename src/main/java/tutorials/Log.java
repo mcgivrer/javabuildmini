@@ -18,7 +18,7 @@ public class Log {
         }
     }
 
-    public static void error(Class<App> cls, String message, Object... args) {
+    public static void error(Class<?> cls, String message, Object... args) {
         log(cls, "ERROR", message, args);
     }
 }

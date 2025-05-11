@@ -27,8 +27,6 @@ public class App implements KeyListener {
     private static Dimension windowSize = new Dimension(640, 400);
     private Renderer renderer;
 
-    List<Entity> entities = new ArrayList<>();
-
     public App() {
         info(App.class, "Start the application %s", messages.getString("app.title"));
     }
@@ -46,42 +44,14 @@ public class App implements KeyListener {
     private void init(String[] args) {
         info(App.class, "Initializing...");
         config.processConfiguration(args);
+        AbstractScene.loadScenes(this, config);
         renderer = new Renderer(this);
         createWindow(messages.getString("app.window.title"), windowSize);
         createScene();
     }
 
     private void createScene() {
-        Entity player = new Entity("player",
-                (window.getWidth() - 16) * 0.5,
-                (window.getHeight() - 16) * 0.5,
-                16,
-                24).add(new Behavior<Entity>() {
-            @Override
-            public void update(App app, Entity e, double deltaTime) {
-                if (isKeyPressed(KeyEvent.VK_UP)) {
-                    e.dy -= 0.01;
-                }
-                if (isKeyPressed(KeyEvent.VK_DOWN)) {
-                    e.dy += 0.01;
-                }
-                if (isKeyPressed(KeyEvent.VK_LEFT)) {
-                    e.dx -= 0.01;
-                }
-                if (isKeyPressed(KeyEvent.VK_RIGHT)) {
-                    e.dx += 0.01;
-                }
-                if (isKeyPressed(KeyEvent.VK_SPACE)) {
-                    e.dy *= 0.9;
-                    e.dx *= 0.9;
-                }
-            }
-        });
-        add(player);
-    }
-
-    private void add(Entity e) {
-        entities.add(e);
+        AbstractScene.initScene();
     }
 
     public void createWindow(String title, Dimension size) {
@@ -130,7 +100,7 @@ public class App implements KeyListener {
     }
 
     public void update(long elapsed) {
-        entities.forEach(e -> {
+        AbstractScene.getCurrentScene().getEntities().forEach(e -> {
             e.setPosition(e.x + (e.dx * elapsed), e.y + (e.dy * elapsed));
             e.getBehaviors().forEach(b -> b.update(this, e, elapsed));
             constrainsEntityToWorld(e, windowSize);

@@ -12,7 +12,8 @@ public class Entity extends Rectangle2D.Double {
 
     protected boolean active = true;
 
-    protected double dx = 0, dy = 0;
+    public double dx = 0;
+    public double dy = 0;
 
     protected Color fillColor = Color.BLUE;
     protected Color color = Color.WHITE;
