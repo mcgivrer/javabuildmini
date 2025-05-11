@@ -19,14 +19,22 @@ public class Renderer {
         ));
         JFrame window = app.getWindow();
         g.setColor(Color.BLACK);
-        g.fillRect(0, 0,window.getWidth(), window.getHeight());
+        g.fillRect(0, 0, window.getWidth(), window.getHeight());
+        app.entities.stream().filter(Entity::isActive).forEach(e -> {
+            drawEntity(g, e);
 
-        drawText(g, "Hello World !",
-                (int) (window.getWidth() * 0.5),
-                (int) (window.getHeight() * 0.5),
-                Color.WHITE,
-                g.getFont().deriveFont(18.0f),
-                TextAlign.CENTER);
+        });
+    }
+
+    private void drawEntity(Graphics2D g, Entity e) {
+        if (e.getFillColor() != null) {
+            g.setColor(e.getFillColor());
+            g.fill(e);
+        }
+        if (e.getColor() != null) {
+            g.setColor(e.getColor());
+            g.draw(e);
+        }
     }
 
 

@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferStrategy;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -22,6 +24,8 @@ public class App implements KeyListener {
     private JFrame window;
     private static Dimension windowSize = new Dimension(640, 400);
     private Renderer renderer;
+
+    List<Entity> entities = new ArrayList<>();
 
     public App() {
         info(App.class, "Start the application %s", messages.getString("app.title"));
@@ -42,6 +46,20 @@ public class App implements KeyListener {
         config.processConfiguration(args);
         renderer = new Renderer(this);
         createWindow(messages.getString("app.window.title"), windowSize);
+        createScene();
+    }
+
+    private void createScene() {
+        Entity player = new Entity("player",
+                (window.getWidth() - 16) * 0.5,
+                (window.getHeight() - 16) * 0.5,
+                16,
+                24);
+        add(player);
+    }
+
+    private void add(Entity e) {
+        entities.add(e);
     }
 
     public void createWindow(String title, Dimension size) {
@@ -90,7 +108,25 @@ public class App implements KeyListener {
     }
 
     public void update() {
+        entities.forEach(e -> {
+            e.setPosition(e.x + e.dx, e.y + e.dy);
+            constrainsEntityToWorld(e, windowSize);
+        });
+    }
 
+    private void constrainsEntityToWorld(Entity e, Dimension windowSize) {
+        if (e.x < 0) {
+            e.x = 0;
+        }
+        if (e.x > windowSize.width - e.width) {
+            e.x = windowSize.width - e.width;
+        }
+        if (e.y < 0) {
+            e.y = 0;
+        }
+        if (e.y > windowSize.height - e.height) {
+            e.y = windowSize.height - e.height;
+        }
     }
 
     public void render() {

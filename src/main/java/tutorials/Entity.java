@@ -1,5 +1,6 @@
 package tutorials;
 
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
 public class Entity extends Rectangle2D.Double {
@@ -8,6 +9,11 @@ public class Entity extends Rectangle2D.Double {
     protected String name = "entity_%d".formatted(id);
 
     protected boolean active = true;
+
+    protected double dx = 0, dy = 0;
+
+    protected Color fillColor = Color.BLUE;
+    protected Color color = Color.WHITE;
 
     public Entity(String name, double x, double y, double width, double height) {
         super(x, y, width, height);
@@ -33,4 +39,15 @@ public class Entity extends Rectangle2D.Double {
     }
 
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public Color getFillColor() {
+        return fillColor;
+    }
+
+    public Color getColor() {
+        return color;
+    }
 }
