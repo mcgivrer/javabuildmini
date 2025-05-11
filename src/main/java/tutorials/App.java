@@ -1,5 +1,8 @@
 package tutorials;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.Properties;
@@ -7,92 +10,92 @@ import java.util.ResourceBundle;
 
 public class App {
     public static ResourceBundle messages = ResourceBundle.getBundle("i18n/messages");
-    Properties config = new Properties();
-    private String configFilePath = "/config.properties";
-    private int debug = 0;
+    public Configuration config = new Configuration();
+    private static int debug = 0;
+    private static boolean exit = false;
+
+    private JFrame window;
+    private static Dimension windowSize = new Dimension(640, 400);
 
     public App() {
-        info(App.class, "Start the application %s", messages.getString("app.title"));
+        Log.info(App.class, "Start the application %s", messages.getString("app.title"));
+    }
+
+    public static void setDebug(int d) {
+        debug = d;
+    }
+
+    public static Object getDebug() {
+        return debug;
+    }
+
+    public static void setWindowSize(Dimension dimensionFromString) {
+        windowSize = dimensionFromString;
+    }
+
+    public static Dimension getWindowSize() {
+        return windowSize;
     }
 
     public void run(String[] args) {
-        info(App.class, "Running...");
+        Log.info(App.class, "Running...");
         init(args);
         process();
         dispose();
-        info(App.class, "Done.");
+        Log.info(App.class, "Done.");
 
     }
 
     private void init(String[] args) {
-        info(App.class, "Initializing...");
-        parseArguments(args);
-        info(App.class, "Configuration file: %s", configFilePath);
-        loadConfigurationFile();
-        info(App.class, "Configuration loaded.");
-        parseArguments(args);
-        config.forEach((key, value) -> extractConfigValue((String) key, (String) value));
+        Log.info(App.class, "Initializing...");
+        config.processConfiguration(args);
+        createWindow(messages.getString("app.window.title"), windowSize);
     }
 
-    private void parseArguments(String[] args) {
-        for (String s : args) {
-            if (s.startsWith("-") && s.contains("=")) {
-                String[] parts = s.substring(1).split("=");
-                info(App.class, "Argument %s=%s", parts[0], parts[1]);
-                config.setProperty(parts[0], parts[1]);
+    public void createWindow(String title, Dimension size) {
+        window = new JFrame(title);
+        window.setSize(size);
+        window.setPreferredSize(size);
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                exit = true;
             }
-        }
-    }
-
-    private void loadConfigurationFile() {
-        try {
-            config.load(App.class.getResourceAsStream(configFilePath));
-        } catch (IOException e) {
-            error(App.class, "Unable to read Configuration file %s: %s", configFilePath, e.getMessage());
-        }
-    }
-
-    public void extractConfigValue(String key, String value) {
-
-        switch (key) {
-            case "debug", "d" -> {
-                debug = Integer.parseInt(value);
-                info(App.class, "Debug level set to %d", debug);
+        });
+        window.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                // to do apply specific operation on resizing.
             }
-            case "configFile", "cf" -> {
-                configFilePath = value;
-                info(App.class, "Configuration file set to %s", configFilePath);
-            }
-        }
+        });
+
+        window.setVisible(true);
+
+
+        Log.debug(App.class, 1, "Window created.");
     }
 
     private void process() {
-        info(App.class, "Processing...");
-        info(App.class, "done.");
+        Log.info(App.class, "Processing...");
+        do {
+            // do something or not.
+        } while (!exit);
+        Log.info(App.class, "done.;");
     }
-
 
     private void dispose() {
-        info(App.class, "Disposing...");
-        info(App.class, "done.");
+        Log.info(App.class, "Disposing...");
+        window.dispose();
+        Log.info(App.class, "done.");
     }
-
 
     public static void main(String[] args) {
         App app = new App();
         app.run(args);
     }
 
-    public static void log(Class<?> cls, String level, String message, Object... args) {
-        System.out.printf("%s;%s;%s;%s%n", ZonedDateTime.now(), cls.getCanonicalName(), level, message.formatted(args));
+    public static boolean isDebugGreaterThan(int level) {
+        return debug > level;
     }
-
-    public static void info(Class<?> cls, String message, Object... args) {
-        log(cls, "INFO", message, args);
-    }
-
-    private static void error(Class<App> cls, String message, Object... args) {
-        log(cls, "ERROR", message, args);
-    }
-
 }
