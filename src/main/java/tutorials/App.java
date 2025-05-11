@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferStrategy;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +56,27 @@ public class App implements KeyListener {
                 (window.getWidth() - 16) * 0.5,
                 (window.getHeight() - 16) * 0.5,
                 16,
-                24);
+                24).add(new Behavior<Entity>() {
+            @Override
+            public void update(App app, Entity e, double deltaTime) {
+                if (isKeyPressed(KeyEvent.VK_UP)) {
+                    e.dy -= 0.01;
+                }
+                if (isKeyPressed(KeyEvent.VK_DOWN)) {
+                    e.dy += 0.01;
+                }
+                if (isKeyPressed(KeyEvent.VK_LEFT)) {
+                    e.dx -= 0.01;
+                }
+                if (isKeyPressed(KeyEvent.VK_RIGHT)) {
+                    e.dx += 0.01;
+                }
+                if (isKeyPressed(KeyEvent.VK_SPACE)) {
+                    e.dy *= 0.9;
+                    e.dx *= 0.9;
+                }
+            }
+        });
         add(player);
     }
 
@@ -92,7 +114,7 @@ public class App implements KeyListener {
         long startTime = 0, endTime = 0, elapsed = 0;
         do {
             startTime = endTime;
-            update();
+            update(elapsed);
             render();
             endTime = System.currentTimeMillis();
             elapsed = endTime - startTime;
@@ -107,25 +129,32 @@ public class App implements KeyListener {
         info(App.class, "End of Processing.");
     }
 
-    public void update() {
+    public void update(long elapsed) {
         entities.forEach(e -> {
-            e.setPosition(e.x + e.dx, e.y + e.dy);
+            e.setPosition(e.x + (e.dx * elapsed), e.y + (e.dy * elapsed));
+            e.getBehaviors().forEach(b -> b.update(this, e, elapsed));
             constrainsEntityToWorld(e, windowSize);
+            e.dx *= 0.97;
+            e.dy *= 0.97;
         });
     }
 
     private void constrainsEntityToWorld(Entity e, Dimension windowSize) {
         if (e.x < 0) {
             e.x = 0;
+            e.dx = 0;
         }
         if (e.x > windowSize.width - e.width) {
             e.x = windowSize.width - e.width;
+            e.dx = 0;
         }
         if (e.y < 0) {
             e.y = 0;
+            e.dy = 0;
         }
         if (e.y > windowSize.height - e.height) {
             e.y = windowSize.height - e.height;
+            e.dy = 0;
         }
     }
 
@@ -182,6 +211,16 @@ public class App implements KeyListener {
 
     public static boolean isKeyPressed(int keyCode) {
         return keys[keyCode];
+    }
+
+    public static void ifKeyPressed(Entity e, int keyCode, Method process, Object... obj) {
+        if (isKeyPressed(keyCode)) {
+            try {
+                process.invoke((Object) e, obj);
+            } catch (IllegalAccessException | InvocationTargetException ex) {
+                error(App.class, "Unable to process method for the key %d", keyCode);
+            }
+        }
     }
 
     public static void setDebug(int d) {

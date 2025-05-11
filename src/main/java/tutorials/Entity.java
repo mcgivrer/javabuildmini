@@ -2,6 +2,8 @@ package tutorials;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Entity extends Rectangle2D.Double {
     protected static int index = 0;
@@ -15,12 +17,19 @@ public class Entity extends Rectangle2D.Double {
     protected Color fillColor = Color.BLUE;
     protected Color color = Color.WHITE;
 
+    protected List<Behavior> behaviors = new ArrayList<>();
+
     public Entity(String name, double x, double y, double width, double height) {
         super(x, y, width, height);
         this.name = name;
     }
 
     public Entity() {
+    }
+
+    public <T extends Entity> T add(Behavior<T> behavior) {
+        behaviors.add(behavior);
+        return (T) this;
     }
 
     public <T extends Entity> T setPosition(double x, double y) {
@@ -49,5 +58,9 @@ public class Entity extends Rectangle2D.Double {
 
     public Color getColor() {
         return color;
+    }
+
+    public List<Behavior> getBehaviors() {
+        return this.behaviors;
     }
 }
