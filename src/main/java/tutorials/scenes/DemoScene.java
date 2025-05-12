@@ -3,6 +3,7 @@ package tutorials.scenes;
 import tutorials.*;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 
 import static tutorials.InputHandler.isKeyPressed;
@@ -19,10 +20,10 @@ public class DemoScene extends AbstractScene implements Scene {
 
         Log.info(this.getClass(), "Initializing...");
         Entity player = new Entity("player",
-                (window.getWidth() - 16) * 0.5,
-                (window.getHeight() - 24) * 0.5,
-                16,
-                24).add(new Behavior<Entity>() {
+            (window.getWidth() - 16) * 0.5,
+            (window.getHeight() - 24) * 0.5,
+            16,
+            24).add(new Behavior<Entity>() {
             @Override
             public void update(App app, Entity e, double deltaTime) {
                 if (isKeyPressed(KeyEvent.VK_UP)) {
@@ -44,6 +45,19 @@ public class DemoScene extends AbstractScene implements Scene {
             }
         });
         add(player);
+
+        generateEntity("enemy_%d", 100, Color.RED, Color.RED.darker());
         Log.info(this.getClass(), "End of Initialization.");
+    }
+
+    private void generateEntity(String rootName, int nb, Color color, Color fillColor) {
+        for (int i = 0; i < nb; i++) {
+            Entity enemy = new Entity(String.format(rootName, i),
+                Math.random() * world.getWidth(), Math.random() * world.getHeight(), 8, 8)
+                .setColor(color)
+                .setFillColor(fillColor)
+                .setMaterial(Material.RUBBER);
+            add(enemy);
+        }
     }
 }

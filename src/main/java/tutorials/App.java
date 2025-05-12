@@ -3,6 +3,7 @@ package tutorials;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferStrategy;
 import java.util.ResourceBundle;
 
@@ -111,29 +112,38 @@ public class App extends JPanel {
                 e.x + ((e.dx + world.getGravity().getX()) * elapsed),
                 e.y + ((e.dy + world.getGravity().getY()) * elapsed));
 
-            constrainsEntityToWorld(scene, e);
+            constrainsEntityToWorld(scene, e, elapsed);
 
             // friction in world
-            e.setVelocity(e.dx * world.getFriction(), e.dy * world.getFriction());
+            e.setVelocity(e.dx * (world.getFriction()),
+                e.dy * (world.getFriction()));
+            // maximize speed
+            e.setVelocity(maximize(e.getVelocity(), 2.0, 2.0));
         });
     }
 
-    private void constrainsEntityToWorld(Scene scene, Entity e) {
+    private Point2D maximize(Point2D velocity, double mxVx, double mxVy) {
+        return new Point2D.Double(
+            Math.signum(velocity.getX()) * Math.min(Math.abs(velocity.getX()), mxVx),
+            Math.signum(velocity.getY()) * Math.min(Math.abs(velocity.getY()), mxVy));
+    }
+
+    private void constrainsEntityToWorld(Scene scene, Entity e, double elapsed) {
         if (e.x < scene.getWorld().getX()) {
             e.x = scene.getWorld().getX();
-            e.dx = 0;
+            e.dx = -e.dx * e.getMaterial().elasticity() * elapsed;
         }
         if (e.x > scene.getWorld().width - e.width) {
             e.x = scene.getWorld().width - e.width;
-            e.dx = 0;
+            e.dx = -e.dx * e.getMaterial().elasticity() * elapsed;
         }
         if (e.y < scene.getWorld().getY()) {
             e.y = scene.getWorld().getY();
-            e.dy = 0;
+            e.dy = -e.dy * e.getMaterial().elasticity() * elapsed;
         }
         if (e.y > scene.getWorld().height - e.height) {
             e.y = scene.getWorld().height - e.height;
-            e.dy = 0;
+            e.dy = -e.dy * e.getMaterial().elasticity() * elapsed;
         }
     }
 

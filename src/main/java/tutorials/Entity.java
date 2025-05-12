@@ -1,6 +1,7 @@
 package tutorials;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,8 @@ public class Entity extends Rectangle2D.Double {
     public double dy = 0;
 
     public PhysicType type;
+    protected Material material = Material.DEFAULT;
+    protected double mass = 1.0;
 
     protected Color fillColor = Color.BLUE;
     protected Color color = Color.WHITE;
@@ -78,6 +81,16 @@ public class Entity extends Rectangle2D.Double {
         return (T) this;
     }
 
+    public <T extends Entity> T setMaterial(Material m) {
+        this.material = m;
+        return (T) this;
+    }
+
+    public <T extends Entity> T setMass(double m) {
+        this.mass = m;
+        return (T) this;
+    }
+
     public boolean isActive() {
         return active;
     }
@@ -98,19 +111,36 @@ public class Entity extends Rectangle2D.Double {
         return type;
     }
 
+    public Material getMaterial() {
+        return material;
+    }
+
+    public double getMass() {
+        return mass;
+    }
+
     @Override
     public String toString() {
         return "Entity{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", dy=" + dy +
-                ", dx=" + dx +
-                ", x=" + x +
-                ", y=" + y +
-                ", width=" + width +
-                ", height=" + height +
-                ", active=" + active +
-                '}';
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", dy=" + dy +
+            ", dx=" + dx +
+            ", x=" + x +
+            ", y=" + y +
+            ", width=" + width +
+            ", height=" + height +
+            ", active=" + active +
+            '}';
     }
 
+    public Point2D getVelocity() {
+        return new Point2D.Double(dx, dy);
+    }
+
+    public <T extends Entity> T setVelocity(Point2D v) {
+        this.dx = v.getX();
+        this.dy = v.getY();
+        return (T) this;
+    }
 }
