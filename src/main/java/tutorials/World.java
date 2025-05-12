@@ -13,7 +13,7 @@ public class World extends Entity {
 
     public World() {
         super("world", 0, 0, 640, 480);
-        setGravity(0, 9.81);
+        setGravity(0, 0.0981);
         setColor(new Color(0.3f, 0.3f, 0.3f, 0.6f));
         setFillColor(null);
         setType(PhysicType.STATIC);

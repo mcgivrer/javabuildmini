@@ -4,28 +4,23 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferStrategy;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 import static java.lang.Thread.sleep;
 import static tutorials.Log.*;
 
-public class App extends JPanel implements KeyListener {
+public class App extends JPanel {
     public static ResourceBundle messages = ResourceBundle.getBundle("i18n/messages");
     public Configuration config = new Configuration();
     private static int debug = 0;
     private static boolean exit = false;
     private static final int FPS = 60;
 
-    private static boolean[] keys = new boolean[1024];
 
     private JFrame window;
     private static Dimension windowSize = new Dimension(640, 400);
     private Renderer renderer;
+    private InputHandler inputHandler;
 
     public App() {
         super();
@@ -47,6 +42,7 @@ public class App extends JPanel implements KeyListener {
         config.processConfiguration(args);
         AbstractScene.loadScenes(this, config);
         renderer = new Renderer(this);
+        inputHandler = new InputHandler(this);
         createWindow(messages.getString("app.window.title"), windowSize);
         createScene();
     }
@@ -60,7 +56,7 @@ public class App extends JPanel implements KeyListener {
         setSize(size);
         setPreferredSize(size);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.addKeyListener(this);
+        window.addKeyListener(inputHandler);
         window.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -108,13 +104,13 @@ public class App extends JPanel implements KeyListener {
         Scene scene = AbstractScene.getCurrentScene();
         World world = scene.getWorld();
         scene.getEntities().stream().filter(e -> e.getType().equals(PhysicType.DYNAMIC)).forEach(e -> {
-            e.setPosition(
-                    e.x + ((e.dx + world.getGravity().getX()) * elapsed),
-                    e.y + ((e.dy + world.getGravity().getY()) * elapsed));
             for (Behavior b : e.getBehaviors()) {
                 b.update(this, e, elapsed);
             }
-            Log.debug(App.class, 5, "entity:%s", e);
+            e.setPosition(
+                e.x + ((e.dx + world.getGravity().getX()) * elapsed),
+                e.y + ((e.dy + world.getGravity().getY()) * elapsed));
+
             constrainsEntityToWorld(scene, e);
 
             // friction in world
@@ -168,50 +164,12 @@ public class App extends JPanel implements KeyListener {
         return debug > level;
     }
 
-    @Override
-    public void keyTyped(KeyEvent e) {
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        keys[e.getKeyCode()] = true;
-        debug(App.class, 5, "Key pressed: %d", e.getKeyCode());
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-        keys[e.getKeyCode()] = false;
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_ESCAPE -> {
-                info(App.class, "Exiting...");
-                exit = true;
-            }
-            case KeyEvent.VK_D -> {
-                debug(App.class, 0, "Debug level set to %d", debug);
-                debug = debug + 1 > 6 ? 0 : debug + 1;
-            }
-        }
-    }
-
-    public static boolean isKeyPressed(int keyCode) {
-        return keys[keyCode];
-    }
-
-    public static void ifKeyPressed(Entity e, int keyCode, Method process, Object... obj) {
-        if (isKeyPressed(keyCode)) {
-            try {
-                process.invoke((Object) e, obj);
-            } catch (IllegalAccessException | InvocationTargetException ex) {
-                error(App.class, "Unable to process method for the key %d", keyCode);
-            }
-        }
-    }
 
     public static void setDebug(int d) {
         debug = d;
     }
 
-    public static Object getDebug() {
+    public static int getDebug() {
         return debug;
     }
 
@@ -225,5 +183,9 @@ public class App extends JPanel implements KeyListener {
 
     public JFrame getWindow() {
         return window;
+    }
+
+    public static void setExit(boolean ex) {
+        exit = ex;
     }
 }

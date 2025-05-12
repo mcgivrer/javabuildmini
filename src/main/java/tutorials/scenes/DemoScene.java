@@ -5,7 +5,7 @@ import tutorials.*;
 import javax.swing.*;
 import java.awt.event.KeyEvent;
 
-import static tutorials.App.isKeyPressed;
+import static tutorials.InputHandler.isKeyPressed;
 
 public class DemoScene extends AbstractScene implements Scene {
     public DemoScene(App app, String name) {
@@ -26,7 +26,7 @@ public class DemoScene extends AbstractScene implements Scene {
             @Override
             public void update(App app, Entity e, double deltaTime) {
                 if (isKeyPressed(KeyEvent.VK_UP)) {
-                    e.addVelocity(0, -3.0);
+                    e.addVelocity(0, -0.05);
                 }
                 if (isKeyPressed(KeyEvent.VK_DOWN)) {
                     e.addVelocity(0, 0.010);
