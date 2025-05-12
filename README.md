@@ -7,11 +7,15 @@ Je vous propose un mini script permettant de gagner du temps sur des projets TRE
 > **ATTENTION** Le script proposé ici ne prend pas en charge des librairies externes et leurs dépendances, seul le JDK
 > est considéré lors du build. Une version plus évoluée d’un script de build sera proposé ultérieurement.
 
-Votre projet comportant vos classes à compiler doit respecter la structure de fichier suivante :
+Votre projet comportant vos classes à compiler doit respecter la structure de fichier suivante:
 
 ```text
 [MONPROJET]
+|_ libs
 |_ src
+|  |_ docs
+|  |  |_ en
+|  |  |_ fr
 |  |_ main
 |  |  |_ java
 |  |  |  |_ [MA_CLASSE].java
@@ -20,25 +24,40 @@ Votre projet comportant vos classes à compiler doit respecter la structure de f
 |  |_ target
 |     |_ build
 |        |_ [MON_PROJET]-[MA_VERSION].jar
-|_ build.sh
+|_ build
 |_ REAMDE.md
 |_ LICENSE
 |_ .sdkmanrc
 |_ .gitignore
 ```
 
-Vous pouvez constater que la structure est fortement inspirée d’un porjet MAVEN standard, où seule la partie code
-SRC/MAIN est utilisée.
+Vous pouvez constater que la structure est fortement inspirée d’un projet MAVEN standard, où seule la partie code
+`src/main/{java,resources}` est utilisée.
 
-Le script `build.sh` que je propose ici, construit autour de cette structure, permet à tout développeur java de
-rapidement le prendre en main. Il est présenté ci-dessous:
+Vous pouvez ajouter des fichiers de configuration spécifiques à votre projet dans le répertoire `src/main/resources`.
+Ces fichiers peuvent inclure des propriétés de configuration, des fichiers XML, ou tout autre type de ressource
+nécessaire à votre application.
+Dans l'exemple de code présent sont fournis un fichier de configuration ainsi que plusieurs fichier permettant
+la traduction de votre application.
+
+Vous noterez également que un nouveau répertoire contenant le documentation `src/docs` apparait.
+Il comporte des sous répertoires par langue ad-hoc, si nécessaire.
+
+Le script `build` que je propose ici, construit autour de cette structure, permet à tout développeur java de
+rapidement le prendre en main.
+
+Il est présenté ci-dessous:
 
 ```bash
 #!/bin/bash
-project_name=step0
+project_name=javabuildmini
 project_version=1.0.0
 main_class=App
-echo "build project ${project_name} version ${project_version}..."
+JARS=
+#
+#--- DO NOT CHANGE THE FOLLOWING LINES ---
+#
+echo "build project ' ${project_name}' version ${project_version}..."
 echo ---
 echo "clean previous build..."
 rm -vrf target/
@@ -49,41 +68,63 @@ echo "sources files:"
 find src/main/java src/main/resources -name "*.java"
 echo ---
 echo "compile..."
-javac -d target/classes $(find src/main/java src/main/resources -name "*.java")
+# shellcheck disable=SC2046
+javac -d target/classes -cp ${JARS// //;} $(find src/main/java src/main/resources -name "*.java")
 cp -vr src/main/resources/* target/classes/
 echo "done."
+echo ---
+echo Create MANIFEST...
+echo """Manifest-Version: ${project_name}
+Main-Class: ${main_class}
+Class-Path: ${JARS}
+Implementation-Title: ${project_name}
+Implementation-Version: ${project_version}
+""" >>target/MANIFEST.MF
+
 echo ---
 echo "build jar..."
 for app in ${main_class}
 do
   echo ">> for ${project_name}.$app..."
-  jar cvfe target/build/${project_name}-${app}-${project_version}.jar $app -C target/classes .
+  jar cvfm target/build/${project_name}-$app-${project_version}.jar target/MANIFEST.MF -C target/classes .
+  mkdir -p target/build/libs
+  cp -vr ./libs/*.jar target/build/libs
   echo "done."
 done
 ```
 
 Son utilisation est on ne peut plus simple, à la racine de votre projet, tapez simplement la ligne de commande
-ci-dessous :
+ci-dessous:
 
 ```bash
-build.sh
+./build
 ```
 
 Vous obtiendrez, avec l'exemple de script ci-dessus, un JAR dans target/build ayant comme nom un composé des variables
-`program_name`et `program_version` en début de script, avec la forme suivante :
+`program_name`et `program_version` en début de script, avec la forme suivante:
 
 ```bash
-target/build/step0-App-1.0.0.jar
+target/build/javabuildmini-App-1.0.0.jar
 ```
 
-La classe principale point d’entrée du jar doit être définie dans la sera alors variable `main_class`.
-
-> **NOTE 1** Pensez à changer la version et le nom du projet (`project_name`, `project_version`) et la classe principale
+> [!NOTE]
+> Pensez à changer la version et le nom du projet (`project_name`, `project_version`) et la classe principale
 `main_class` dans le script avant compilation.
 
-> **TIPS** Vous pouvez également générer plusieurs JAR en spécifiant une liste de classes séparée par des espaces dans
-> la variable `main_class`, "MaClasse1 MaClasse2 Maclasse3", ainsi 3 fichiers JAR, ayant chacun pour point d'entrée une
-> des classes listées, seront créés.
+> [!NOTE]
+> La (les) classe(s) principale(s), point d’entrée du jar, doi(ven)t être définie(s) dans la variable
+`main_class`.
+>
+> [!TIP]
+> Vous pouvez également générer plusieurs JAR en spécifiant une liste de classes séparée par des espaces dans
+> la variable `main_class`, "MaClasse1 MaClasse2 Maclasse3", ainsi, trois fichiers archives java (JAR), ayant chacun
+> pour point d'entrée une des classes listées, seront crés.
+
+> [!NOTE]
+> Vous pouvez maintenant ajouter des dépendances externes en ajoutant leurs chemins dans le script via la
+> variable `JARS` qui doit lister les archives
+> java (JAR) à
+> inclure dans le build ainsi que dans le fichier `MANIFEST.MF` des jars créés.
 
 Bon Code !
 
