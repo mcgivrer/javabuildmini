@@ -20,30 +20,34 @@ public class DemoScene extends AbstractScene implements Scene {
 
         Log.info(this.getClass(), "Initializing...");
         Entity player = new Entity("player",
-            (window.getWidth() - 16) * 0.5,
-            (window.getHeight() - 24) * 0.5,
-            16,
-            24).add(new Behavior<Entity>() {
-            @Override
-            public void update(App app, Entity e, double deltaTime) {
-                if (isKeyPressed(KeyEvent.VK_UP)) {
-                    e.addVelocity(0, -0.05);
-                }
-                if (isKeyPressed(KeyEvent.VK_DOWN)) {
-                    e.addVelocity(0, 0.010);
-                }
-                if (isKeyPressed(KeyEvent.VK_LEFT)) {
-                    e.addVelocity(-0.010, 0);
-                }
-                if (isKeyPressed(KeyEvent.VK_RIGHT)) {
-                    e.addVelocity(0.010, 0);
-                }
-                if (isKeyPressed(KeyEvent.VK_SPACE)) {
-                    e.dy *= 0.9;
-                    e.dx *= 0.9;
-                }
-            }
-        });
+                (window.getWidth() - 16) * 0.5,
+                (window.getHeight() - 24) * 0.5,
+                16,
+                24)
+                .setMaterial(Material.PLASTIC)
+                .setMass(80.0)
+                .add(new Behavior<Entity>() {
+                    @Override
+                    public void update(App app, Entity e, double deltaTime) {
+                        double step = 4.0;
+                        if (isKeyPressed(KeyEvent.VK_UP)) {
+                            e.addVelocity(0, -step * 10.0);
+                        }
+                        if (isKeyPressed(KeyEvent.VK_DOWN)) {
+                            e.addVelocity(0, step);
+                        }
+                        if (isKeyPressed(KeyEvent.VK_LEFT)) {
+                            e.addVelocity(-step, 0);
+                        }
+                        if (isKeyPressed(KeyEvent.VK_RIGHT)) {
+                            e.addVelocity(step, 0);
+                        }
+                        if (isKeyPressed(KeyEvent.VK_SPACE)) {
+                            e.dy *= 0.9;
+                            e.dx *= 0.9;
+                        }
+                    }
+                });
         add(player);
 
         generateEntity("enemy_%d", 100, Color.RED, Color.RED.darker());
@@ -53,10 +57,20 @@ public class DemoScene extends AbstractScene implements Scene {
     private void generateEntity(String rootName, int nb, Color color, Color fillColor) {
         for (int i = 0; i < nb; i++) {
             Entity enemy = new Entity(String.format(rootName, i),
-                Math.random() * world.getWidth(), Math.random() * world.getHeight(), 8, 8)
-                .setColor(color)
-                .setFillColor(fillColor)
-                .setMaterial(Material.RUBBER);
+                    Math.random() * world.getWidth(), Math.random() * world.getHeight(), 8, 8)
+                    .setColor(color)
+                    .setFillColor(fillColor)
+                    .setMaterial(Material.RUBBER)
+                    .setMass(10.0)
+                    .add(new Behavior<Entity>() {
+                        @Override
+                        public void update(App app, Entity e, double deltaTime) {
+                            if (isKeyPressed(KeyEvent.VK_R)) {
+                                e.setPosition(Math.random() * world.getWidth(), Math.random() * world.getHeight());
+                                e.setVelocity(Math.random() * 10 - 5, Math.random() * 100 - 50);
+                            }
+                        }
+                    });
             add(enemy);
         }
     }

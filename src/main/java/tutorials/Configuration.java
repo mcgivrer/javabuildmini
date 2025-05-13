@@ -53,6 +53,9 @@ public class Configuration {
 
                 Log.info(App.class, "Window size set to %s", App.getWindowSize());
             }
+            case "app.physic.max.speed","maxspeed","ms"->{
+                App.setMaxSpeed(Integer.parseInt(value));
+            }
         }
     }
 

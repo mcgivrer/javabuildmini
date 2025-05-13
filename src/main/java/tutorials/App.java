@@ -12,6 +12,7 @@ import static tutorials.Log.*;
 
 public class App extends JPanel {
     public static ResourceBundle messages = ResourceBundle.getBundle("i18n/messages");
+    private static double maxSpeed = 4.0;
     public Configuration config = new Configuration();
     private static int debug = 0;
     private static boolean exit = false;
@@ -27,7 +28,6 @@ public class App extends JPanel {
         super();
         info(App.class, "Start the application %s", messages.getString("app.title"));
     }
-
 
     public void run(String[] args) {
         info(App.class, "Running...");
@@ -109,23 +109,23 @@ public class App extends JPanel {
                 b.update(this, e, elapsed);
             }
             e.setPosition(
-                e.x + ((e.dx + world.getGravity().getX()) * elapsed),
-                e.y + ((e.dy + world.getGravity().getY()) * elapsed));
+                    e.x + ((e.dx + world.getGravity().getX()) * elapsed / e.getMass()),
+                    e.y + ((e.dy + world.getGravity().getY()) * elapsed / e.getMass()));
 
             constrainsEntityToWorld(scene, e, elapsed);
 
-            // friction in world
+            // friction in World
             e.setVelocity(e.dx * (world.getFriction()),
-                e.dy * (world.getFriction()));
+                    e.dy * (world.getFriction()));
             // maximize speed
-            e.setVelocity(maximize(e.getVelocity(), 2.0, 2.0));
+            e.setVelocity(maximize(e.getVelocity(), maxSpeed, maxSpeed));
         });
     }
 
     private Point2D maximize(Point2D velocity, double mxVx, double mxVy) {
         return new Point2D.Double(
-            Math.signum(velocity.getX()) * Math.min(Math.abs(velocity.getX()), mxVx),
-            Math.signum(velocity.getY()) * Math.min(Math.abs(velocity.getY()), mxVy));
+                Math.signum(velocity.getX()) * Math.min(Math.abs(velocity.getX()), mxVx),
+                Math.signum(velocity.getY()) * Math.min(Math.abs(velocity.getY()), mxVy));
     }
 
     private void constrainsEntityToWorld(Scene scene, Entity e, double elapsed) {
@@ -198,4 +198,10 @@ public class App extends JPanel {
     public static void setExit(boolean ex) {
         exit = ex;
     }
+
+    public static void setMaxSpeed(double ms) {
+        maxSpeed = ms;
+    }
+
+
 }
