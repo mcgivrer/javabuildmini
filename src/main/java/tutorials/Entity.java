@@ -25,6 +25,7 @@ public class Entity extends Rectangle2D.Double {
 
     protected List<Behavior> behaviors = new ArrayList<>();
     private int priority = 0;
+    private boolean stickToViewport = false;
 
     public Entity() {
         super();
@@ -74,6 +75,11 @@ public class Entity extends Rectangle2D.Double {
         return (T) this;
     }
 
+    public <T extends Entity> T setStickToViewport(boolean stick) {
+        this.stickToViewport = stick;
+        return (T) this;
+    }
+
     public <T extends Entity> T setColor(Color c) {
         this.color = c;
         return (T) this;
@@ -104,6 +110,10 @@ public class Entity extends Rectangle2D.Double {
         return (T) this;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public boolean isActive() {
         return active;
     }
@@ -132,21 +142,6 @@ public class Entity extends Rectangle2D.Double {
         return mass;
     }
 
-    @Override
-    public String toString() {
-        return "Entity{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", dy=" + dy +
-                ", dx=" + dx +
-                ", x=" + x +
-                ", y=" + y +
-                ", width=" + width +
-                ", height=" + height +
-                ", active=" + active +
-                '}';
-    }
-
     public Point2D getVelocity() {
         return new Point2D.Double(dx, dy);
     }
@@ -163,5 +158,25 @@ public class Entity extends Rectangle2D.Double {
 
     public int getPriority() {
         return priority;
+    }
+
+    public boolean isStickToViewport() {
+        return stickToViewport;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Entity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", dy=" + dy +
+                ", dx=" + dx +
+                ", x=" + x +
+                ", y=" + y +
+                ", width=" + width +
+                ", height=" + height +
+                ", active=" + active +
+                '}';
     }
 }

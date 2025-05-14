@@ -18,7 +18,6 @@ public class App extends JPanel {
     private static boolean exit = false;
     private static final int FPS = 60;
 
-
     private JFrame window;
     private static Dimension windowSize = new Dimension(640, 400);
     private Renderer renderer;
@@ -28,7 +27,6 @@ public class App extends JPanel {
         super();
         info(App.class, "Start the application %s", messages.getString("app.title"));
     }
-
 
     public void run(String[] args) {
         info(App.class, "Running...");
@@ -76,7 +74,10 @@ public class App extends JPanel {
             public void componentResized(ComponentEvent e) {
                 if (Optional.ofNullable(AbstractScene.getCurrentScene()).isPresent()
                         && Optional.ofNullable(AbstractScene.getCurrentScene().getActiveCamera()).isPresent()) {
-                    AbstractScene.getCurrentScene().getActiveCamera().setViewport(window.getWidth(), window.getHeight());
+                    Scene scene = AbstractScene.getCurrentScene();
+                    scene.getActiveCamera().setViewport(window.getWidth(), window.getHeight());
+                    scene.resize(window);
+
                 }
             }
         });
@@ -115,22 +116,23 @@ public class App extends JPanel {
         Scene scene = AbstractScene.getCurrentScene();
         World world = scene.getWorld();
         scene.getEntities().stream()
-                .filter(e -> e.getType().equals(PhysicType.DYNAMIC))
                 .forEach(e -> {
                     for (Behavior b : e.getBehaviors()) {
                         b.update(this, e, elapsed);
                     }
-                    e.setPosition(
-                            e.x + (((e.dx + world.getGravity().getX()) * world.getMaterial().friction() / e.getMass()) * elapsed),
-                            e.y + (((e.dy + world.getGravity().getY()) * world.getMaterial().friction() / e.getMass()) * elapsed));
+                    if (e.getType() == PhysicType.DYNAMIC) {
+                        e.setPosition(
+                                e.x + (((e.dx + world.getGravity().getX()) * world.getMaterial().friction() / e.getMass()) * elapsed),
+                                e.y + (((e.dy + world.getGravity().getY()) * world.getMaterial().friction() / e.getMass()) * elapsed));
 
-                    constrainsEntityToWorld(scene, e, elapsed);
+                        constrainsEntityToWorld(scene, e, elapsed);
 
-                    // friction in world
-                    e.setVelocity(e.dx * (world.getFriction()),
-                            e.dy * (world.getFriction()));
-                    // maximize speed
-                    e.setVelocity(maximize(e.getVelocity(), 4.0, 8.0));
+                        // friction in world
+                        e.setVelocity(e.dx * (world.getFriction()),
+                                e.dy * (world.getFriction()));
+                        // maximize speed
+                        e.setVelocity(maximize(e.getVelocity(), 4.0, 8.0));
+                    }
                 });
 
         if (Optional.ofNullable(scene.getActiveCamera()).isPresent()) {
@@ -172,7 +174,6 @@ public class App extends JPanel {
         bs.show();
     }
 
-
     private void dispose() {
         info(App.class, "Disposing...");
         if (window != null && window.isActive()) {
@@ -189,7 +190,6 @@ public class App extends JPanel {
     public static boolean isDebugGreaterThan(int level) {
         return debug < level;
     }
-
 
     public static void setDebug(int d) {
         debug = d;

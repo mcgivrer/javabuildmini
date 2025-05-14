@@ -1,13 +1,6 @@
 package tutorials.scenes;
 
-import tutorials.Scene;
-import tutorials.AbstractScene;
-import tutorials.Entity;
-import tutorials.Log;
-import tutorials.Behavior;
-import tutorials.App;
-import tutorials.Material;
-import tutorials.Camera;
+import tutorials.*;
 
 
 import javax.swing.*;
@@ -61,6 +54,24 @@ public class DemoScene extends AbstractScene implements Scene {
 
         generateEntity("enemy_%d", 100, Color.RED, Color.RED.darker());
 
+        add(new TextEntity("score")
+                .setText("%05d")
+                .setValue(0)
+                .setTextColor(Color.WHITE)
+                .setShadowColor(Color.BLACK)
+                .setFont(app.getWindow().getGraphics().getFont().deriveFont(26.0f))
+                .setPosition(40, 56)
+                .setStickToViewport(true));
+
+
+        add(new TextEntity("life")
+                .setText("%01d")
+                .setValue(3)
+                .setTextColor(Color.WHITE)
+                .setShadowColor(Color.BLACK)
+                .setFont(app.getWindow().getGraphics().getFont().deriveFont(26.0f))
+                .setPosition(app.getWindow().getWidth() - 50, 56)
+                .setStickToViewport(true));
         // define the new active camera for the scene.
         add(new Camera("cam01")
                 .setOffset(40, 40)
@@ -69,6 +80,16 @@ public class DemoScene extends AbstractScene implements Scene {
                 .setTweenFactor(0.002));
 
         Log.info(this.getClass(), "End of Initialization.");
+
+    }
+
+    public void resize(JFrame window) {
+        getEntity("score").setPosition(40, 56);
+        getEntity("life").setPosition(app.getWindow().getWidth() - 50, 56);
+    }
+
+    private Entity getEntity(String name) {
+        return getEntities().stream().filter(e -> e.getName().equals(name)).findFirst().orElse(null);
     }
 
     private void generateEntity(String rootName, int nb, Color color, Color fillColor) {

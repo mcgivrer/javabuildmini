@@ -28,13 +28,7 @@ public class Renderer {
                     -scene.getActiveCamera().getPosition().getX(),
                     -scene.getActiveCamera().getPosition().getY());
         }
-        scene.getEntities().stream()
-                .filter(Entity::isActive)
-                .filter(entity -> !(entity instanceof Camera))
-                .sorted(Comparator.comparingInt(Entity::getPriority))
-                .forEach(e -> {
-                    drawEntity(g, e);
-                });
+        drawEntities(g, scene, false);
         if (Optional.ofNullable(scene.getActiveCamera()).isPresent()) {
             Camera cam = scene.getActiveCamera();
             g.draw(cam.getViewport());
@@ -42,6 +36,28 @@ public class Renderer {
                     cam.getPosition().getX(),
                     cam.getPosition().getY());
         }
+        drawEntities(g, scene, true);
+    }
+
+    private void drawEntities(Graphics2D g, Scene scene, boolean stickToViewport) {
+        scene.getEntities().stream()
+                .filter(Entity::isActive)
+                .filter(e -> e.isStickToViewport() == stickToViewport)
+                .filter(entity -> !(entity instanceof Camera))
+                .sorted(Comparator.comparingInt(Entity::getPriority))
+                .forEach(e -> {
+                    if (e instanceof TextEntity te) {
+                        drawText(g, te.getText(),
+                                (int) te.getX(), (int) te.getY(),
+                                te.getColor(),
+                                te.getFont(),
+                                te.getTextAlign());
+
+                        te.setSize(app.getGraphics().getFontMetrics().stringWidth(te.getText()), app.getGraphics().getFontMetrics().getHeight());
+                    } else {
+                        drawEntity(g, e);
+                    }
+                });
     }
 
     private void drawEntity(Graphics2D g, Entity e) {

@@ -1,5 +1,6 @@
 package tutorials;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
@@ -25,4 +26,8 @@ public interface Scene {
     void add(Entity e);
 
     Camera getActiveCamera();
+
+    void resize(JFrame window);
+
+    ;
 }
