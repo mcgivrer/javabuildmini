@@ -24,6 +24,7 @@ public class Entity extends Rectangle2D.Double {
     protected Color color = Color.WHITE;
 
     protected List<Behavior> behaviors = new ArrayList<>();
+    private int priority = 0;
 
     public Entity() {
         super();
@@ -98,6 +99,11 @@ public class Entity extends Rectangle2D.Double {
         return (T) this;
     }
 
+    public <T extends Entity> T setPriority(int m) {
+        this.priority = m;
+        return (T) this;
+    }
+
     public boolean isActive() {
         return active;
     }
@@ -153,5 +159,9 @@ public class Entity extends Rectangle2D.Double {
 
     public Point2D getPosition() {
         return new Point2D.Double(x, y);
+    }
+
+    public int getPriority() {
+        return priority;
     }
 }

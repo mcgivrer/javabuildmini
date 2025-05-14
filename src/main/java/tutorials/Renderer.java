@@ -2,6 +2,7 @@ package tutorials;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Optional;
 
@@ -30,6 +31,7 @@ public class Renderer {
         scene.getEntities().stream()
                 .filter(Entity::isActive)
                 .filter(entity -> !(entity instanceof Camera))
+                .sorted(Comparator.comparingInt(Entity::getPriority))
                 .forEach(e -> {
                     drawEntity(g, e);
                 });

@@ -52,7 +52,11 @@ public class App extends JPanel {
     }
 
     private void createScene() {
+        info(App.class, "Scene '%s' initializing",
+                AbstractScene.getCurrentScene().getName());
         AbstractScene.initScene();
+        info(App.class, "End of Scene initialization done with %d objects....",
+                AbstractScene.getCurrentScene().getEntities().size());
     }
 
     public void createWindow(String title, Dimension size) {
@@ -183,7 +187,7 @@ public class App extends JPanel {
     }
 
     public static boolean isDebugGreaterThan(int level) {
-        return debug > level;
+        return debug < level;
     }
 
 

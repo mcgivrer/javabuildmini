@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static tutorials.Log.debug;
+
 public abstract class AbstractScene implements Scene {
 
 
@@ -74,6 +76,7 @@ public abstract class AbstractScene implements Scene {
             }
         }
         entities.add(e);
+        debug(AbstractScene.class, 2, "|_ Adding Entity '%s' [%s]", e.name, e.getClass());
     }
 
 

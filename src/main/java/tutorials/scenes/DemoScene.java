@@ -34,6 +34,7 @@ public class DemoScene extends AbstractScene implements Scene {
                 24)
                 .setMass(80.0)
                 .setMaterial(Material.PLASTIC)
+                .setPriority(1)
                 .add(new Behavior<Entity>() {
                     @Override
                     public void update(App app, Entity e, double deltaTime) {
@@ -66,17 +67,19 @@ public class DemoScene extends AbstractScene implements Scene {
                 .setViewport(app.getWindow().getWidth(), app.getWindow().getHeight())
                 .setTarget(player)
                 .setTweenFactor(0.002));
+
         Log.info(this.getClass(), "End of Initialization.");
     }
 
     private void generateEntity(String rootName, int nb, Color color, Color fillColor) {
         for (int i = 0; i < nb; i++) {
-            Entity enemy = new Entity(String.format(rootName, i),
+            Entity enemy = new Entity(rootName.formatted(i),
                     Math.random() * world.getWidth(), Math.random() * world.getHeight(), 8, 8)
                     .setColor(color)
                     .setFillColor(fillColor)
                     .setMaterial(Material.RUBBER)
-                    .setMass(10.0);
+                    .setMass(10.0)
+                    .setPriority(10 + i);
             add(enemy);
         }
     }
