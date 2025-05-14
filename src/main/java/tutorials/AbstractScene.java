@@ -3,6 +3,7 @@ package tutorials;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class AbstractScene implements Scene {
 
@@ -15,6 +16,7 @@ public class AbstractScene implements Scene {
     private static Scene currentScene;
 
     private List<Entity> entities = new ArrayList<>();
+    private Camera activeCamera;
 
 
     public AbstractScene(App app, String name) {
@@ -66,8 +68,14 @@ public class AbstractScene implements Scene {
     }
 
     public void add(Entity e) {
+        if (e instanceof Camera c) {
+            if (Optional.ofNullable(getActiveCamera()).isEmpty()) {
+                setActiveCamera(c);
+            }
+        }
         entities.add(e);
     }
+
 
     @Override
     public void dispose() {
@@ -95,6 +103,15 @@ public class AbstractScene implements Scene {
 
     public World getWorld() {
         return world;
+    }
+
+    private void setActiveCamera(Camera c) {
+        activeCamera = c;
+    }
+
+    @Override
+    public Camera getActiveCamera() {
+        return activeCamera;
     }
 
 }

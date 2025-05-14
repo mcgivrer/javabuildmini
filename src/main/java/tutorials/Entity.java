@@ -25,14 +25,21 @@ public class Entity extends Rectangle2D.Double {
 
     protected List<Behavior> behaviors = new ArrayList<>();
 
+    public Entity() {
+        super();
+    }
+
+    public Entity(String name) {
+        super();
+        this.name = name;
+    }
+
     public Entity(String name, double x, double y, double width, double height) {
         super(x, y, width, height);
         this.name = name;
         setType(PhysicType.DYNAMIC);
     }
 
-    public Entity() {
-    }
 
     public <T extends Entity> T add(Behavior<T> behavior) {
         behaviors.add(behavior);
@@ -122,16 +129,16 @@ public class Entity extends Rectangle2D.Double {
     @Override
     public String toString() {
         return "Entity{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            ", dy=" + dy +
-            ", dx=" + dx +
-            ", x=" + x +
-            ", y=" + y +
-            ", width=" + width +
-            ", height=" + height +
-            ", active=" + active +
-            '}';
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", dy=" + dy +
+                ", dx=" + dx +
+                ", x=" + x +
+                ", y=" + y +
+                ", width=" + width +
+                ", height=" + height +
+                ", active=" + active +
+                '}';
     }
 
     public Point2D getVelocity() {
@@ -142,5 +149,9 @@ public class Entity extends Rectangle2D.Double {
         this.dx = v.getX();
         this.dy = v.getY();
         return (T) this;
+    }
+
+    public Point2D getPosition() {
+        return new Point2D.Double(x, y);
     }
 }

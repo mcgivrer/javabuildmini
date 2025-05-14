@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferStrategy;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static java.lang.Thread.sleep;
@@ -69,7 +70,10 @@ public class App extends JPanel {
         window.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                // to do apply specific operation on resizing.
+                if (Optional.ofNullable(AbstractScene.getCurrentScene()).isPresent()
+                        && Optional.ofNullable(AbstractScene.getCurrentScene().getActiveCamera()).isPresent()) {
+                    AbstractScene.getCurrentScene().getActiveCamera().setViewport(window.getWidth(), window.getHeight());
+                }
             }
         });
         window.setContentPane(this);
@@ -106,22 +110,28 @@ public class App extends JPanel {
     public void update(long elapsed) {
         Scene scene = AbstractScene.getCurrentScene();
         World world = scene.getWorld();
-        scene.getEntities().stream().filter(e -> e.getType().equals(PhysicType.DYNAMIC)).forEach(e -> {
-            for (Behavior b : e.getBehaviors()) {
-                b.update(this, e, elapsed);
-            }
-            e.setPosition(
-                    e.x + ((e.dx + world.getGravity().getX()) * elapsed),
-                    e.y + ((e.dy + world.getGravity().getY()) * elapsed));
+        scene.getEntities().stream()
+                .filter(e -> e.getType().equals(PhysicType.DYNAMIC))
+                .forEach(e -> {
+                    for (Behavior b : e.getBehaviors()) {
+                        b.update(this, e, elapsed);
+                    }
+                    e.setPosition(
+                            e.x + (((e.dx + world.getGravity().getX()) * world.getMaterial().friction() / e.getMass()) * elapsed),
+                            e.y + (((e.dy + world.getGravity().getY()) * world.getMaterial().friction() / e.getMass()) * elapsed));
 
-            constrainsEntityToWorld(scene, e, elapsed);
+                    constrainsEntityToWorld(scene, e, elapsed);
 
-            // friction in world
-            e.setVelocity(e.dx * (world.getFriction()),
-                    e.dy * (world.getFriction()));
-            // maximize speed
-            e.setVelocity(maximize(e.getVelocity(), 2.0, 2.0));
-        });
+                    // friction in world
+                    e.setVelocity(e.dx * (world.getFriction()),
+                            e.dy * (world.getFriction()));
+                    // maximize speed
+                    e.setVelocity(maximize(e.getVelocity(), 4.0, 8.0));
+                });
+
+        if (Optional.ofNullable(scene.getActiveCamera()).isPresent()) {
+            scene.getActiveCamera().update(elapsed);
+        }
     }
 
     private Point2D maximize(Point2D velocity, double mxVx, double mxVy) {

@@ -3,6 +3,7 @@ package tutorials;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Map;
+import java.util.Optional;
 
 public class Renderer {
 
@@ -20,10 +21,25 @@ public class Renderer {
         JFrame window = app.getWindow();
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, window.getWidth(), window.getHeight());
-        AbstractScene.getCurrentScene().getEntities().stream().filter(Entity::isActive).forEach(e -> {
-            drawEntity(g, e);
-
-        });
+        Scene scene = AbstractScene.getCurrentScene();
+        if (Optional.ofNullable(scene.getActiveCamera()).isPresent()) {
+            g.translate(
+                    -scene.getActiveCamera().getPosition().getX(),
+                    -scene.getActiveCamera().getPosition().getY());
+        }
+        scene.getEntities().stream()
+                .filter(Entity::isActive)
+                .filter(entity -> !(entity instanceof Camera))
+                .forEach(e -> {
+                    drawEntity(g, e);
+                });
+        if (Optional.ofNullable(scene.getActiveCamera()).isPresent()) {
+            Camera cam = scene.getActiveCamera();
+            g.draw(cam.getViewport());
+            g.translate(
+                    cam.getPosition().getX(),
+                    cam.getPosition().getY());
+        }
     }
 
     private void drawEntity(Graphics2D g, Entity e) {

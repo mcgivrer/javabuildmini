@@ -23,4 +23,6 @@ public interface Scene {
     World getWorld();
 
     void add(Entity e);
+
+    Camera getActiveCamera();
 }
