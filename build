@@ -10,43 +10,55 @@
 project_name=javabuildmini
 project_version=1.0.0
 main_class=tutorials.App
+app_run=tutorials.App
 
 JARS=
 #
 #--- DO NOT CHANGE THE FOLLOWING LINES ---
 #
 echo "build project ' ${project_name}' version ${project_version}..."
-echo ---
-echo "clean previous build..."
-rm -vrf target/
-mkdir -vp target/{build,classes}
-echo "done."
-echo ---
-echo "sources files:"
-find src/main/java src/main/resources -name "*.java"
-echo ---
-echo "compile..."
-# shellcheck disable=SC2046
-javac -d target/classes -cp ${JARS// //;} $(find src/main/java src/main/resources -name "*.java")
-cp -vr src/main/resources/* target/classes/
-echo "done."
-echo ---
-echo Create MANIFEST...
-echo """Manifest-Version: ${project_name}
+for arg
+do
+	echo "execute command $arg:";
+  case $arg in 
+    c | clear)
+      echo "clean previous build..."
+      rm -vrf target/
+      mkdir -vp target/{build,classes}
+      echo "done."
+      echo ---
+      ;;
+    r | run | execute)
+      echo "run ..."
+      java -jar target/build/${project_name}-$app_run-${project_version}.jar -cp target/build/libs/* ${main_class}
+      ;;
+    b | build)
+      echo "build ..."
+      echo "sources files:"
+      find src/main/java src/main/resources -type f -name *.java
+      echo ---
+      javac -d target/classes -cp ${JARS// //;}:src/main/java:src/main/resources $(find src/main/java src/main/resources -type f -name *.java)
+      cp -vr src/main/resources/* target/classes/
+      ;;
+    m | manifest)
+      echo "create manifest ..."
+      echo """Manifest-Version: ${project_name}
 Main-Class: ${main_class}
 Class-Path: ${JARS}
 Implementation-Title: ${project_name}
 Implementation-Version: ${project_version}
 """ >>target/MANIFEST.MF
-
-echo ---
-echo "build jar..."
-for app in ${main_class}
-do
-  echo ">> for ${project_name}.$app..."
-  jar cvfm target/build/${project_name}-$app-${project_version}.jar target/MANIFEST.MF -C target/classes .
-  mkdir -p target/build/libs
-  cp -vr ./libs/*.jar target/build/libs
-  echo "done."
+      ;;
+    j | jar)
+    echo "build jar..."
+    for app in ${main_class}
+    do
+      echo ">> for ${project_name}.$app..."
+      jar cvfm target/build/${project_name}-$app-${project_version}.jar target/MANIFEST.MF -C target/classes .
+      mkdir -p target/build/libs
+      cp -vr ./libs/ target/build/libs
+      echo "done."
+    done
+  esac;
 done
 
