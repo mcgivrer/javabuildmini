@@ -1,7 +1,11 @@
-peux-tu m'aider à coder 
-# un moteur 2D physique en java
+# Moteur 2D physique
 
-## Objects
+Le moteur décrit ici permet de gérer les movements en respectant les lois de Newton, 
+de detecter les collisions et en gérer les réponses entre les objets de type 
+Entity évoluant dans une zone définie par un ou plieurs objets World.
+le propriété mecanique et physique des objects sont portées par la classe Material.
+
+## les objets
 
 Chacune des classes suivantes possèdent un identifiant unique (id:long), un nom (name:String) défini à l'instantiation (mais 
 avec la possibilité d'en voir un généré par defaut).
@@ -50,10 +54,20 @@ ces entités évoluent, ainsi que la gravité de l'environnemnt (exprimée en m/
 - material: Material, 
 - parent: World 
 - areas: List<World> une liste de zones,
-- parent: Entity
-- child: List<Entity>
 
 
-Un objet World peut-être est composé de plusieurs World imbriqués via des relations parent/enfant, permettant 
-ainsi définir un monde dans lequel les caractéristique peuvent changer d'une zone à l'autre (material, garvity, 
-etc...).
+Un objet World peut-être est composé de plusieurs World imbriqués via des relations 
+parent/enfant, permettant ainsi définir un monde dans lequel les caractéristique 
+peuvent changer d'une zone à l'autre (material, garvity, etc...).
+
+## Traitement
+
+
+les entités (Entity) évoluant dans le World sont soumises aux caractéristiques 
+définies par le ou les objets World. Afin d'optimiser la detection des collisions, 
+les entités seront dispatchées à travers un QuadTree à la taille du WOrld, ce qui 
+servira à réduire considérablement le nombre de comparaison entre les entités.
+
+Il est impoerant de noter que ce moteur 2D doit être capable de gérer un très grand 
+nombre d'entiés, et doit dont être optimisé. lutilisation des fonctionnalités 
+offertes par le JDK24 (lambdas, etc...) est nécessaire.

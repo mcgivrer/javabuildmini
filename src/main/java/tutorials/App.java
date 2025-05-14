@@ -41,10 +41,12 @@ public class App extends JPanel {
     private void init(String[] args) {
         info(App.class, "Initializing...");
         config.processConfiguration(args);
+        debug = config.getConfigValue("app.debug.level", "0");
+
         AbstractScene.loadScenes(this, config);
         renderer = new Renderer(this);
         inputHandler = new InputHandler(this);
-        createWindow(messages.getString("app.window.title"), windowSize);
+        createWindow(messages.getString("app.window.title"), config.getConfigValue("app.window.size", "760x420"));
         createScene();
     }
 
@@ -109,14 +111,14 @@ public class App extends JPanel {
                 b.update(this, e, elapsed);
             }
             e.setPosition(
-                e.x + ((e.dx + world.getGravity().getX()) * elapsed),
-                e.y + ((e.dy + world.getGravity().getY()) * elapsed));
+                    e.x + ((e.dx + world.getGravity().getX()) * elapsed),
+                    e.y + ((e.dy + world.getGravity().getY()) * elapsed));
 
             constrainsEntityToWorld(scene, e, elapsed);
 
             // friction in world
             e.setVelocity(e.dx * (world.getFriction()),
-                e.dy * (world.getFriction()));
+                    e.dy * (world.getFriction()));
             // maximize speed
             e.setVelocity(maximize(e.getVelocity(), 2.0, 2.0));
         });
@@ -124,8 +126,8 @@ public class App extends JPanel {
 
     private Point2D maximize(Point2D velocity, double mxVx, double mxVy) {
         return new Point2D.Double(
-            Math.signum(velocity.getX()) * Math.min(Math.abs(velocity.getX()), mxVx),
-            Math.signum(velocity.getY()) * Math.min(Math.abs(velocity.getY()), mxVy));
+                Math.signum(velocity.getX()) * Math.min(Math.abs(velocity.getX()), mxVx),
+                Math.signum(velocity.getY()) * Math.min(Math.abs(velocity.getY()), mxVy));
     }
 
     private void constrainsEntityToWorld(Scene scene, Entity e, double elapsed) {

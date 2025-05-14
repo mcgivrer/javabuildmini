@@ -4,6 +4,9 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.Properties;
 
+import static tutorials.Log.error;
+import static tutorials.Log.info;
+
 public class Configuration {
     Properties config = new Properties();
     private String configFilePath = "/config.properties";
@@ -11,19 +14,17 @@ public class Configuration {
 
     void processConfiguration(String[] args) {
         parseArguments(args);
-        config.forEach((key, value) -> extractConfigValue((String) key, (String) value));
-        Log.info(App.class, "Configuration file: %s", configFilePath);
+        info(App.class, "Configuration file: %s", configFilePath);
         loadConfigurationFile();
-        Log.info(App.class, "Configuration loaded.");
+        info(App.class, "Configuration loaded.");
         parseArguments(args);
-        config.forEach((key, value) -> extractConfigValue((String) key, (String) value));
     }
 
     private void parseArguments(String[] args) {
         for (String s : args) {
             if (s.startsWith("-") && s.contains("=")) {
                 String[] parts = s.substring(1).split("=");
-                Log.info(App.class, "Argument %s=%s", parts[0], parts[1]);
+                info(App.class, "Argument %s=%s", parts[0], parts[1]);
                 config.setProperty(parts[0], parts[1]);
             }
         }
@@ -33,7 +34,7 @@ public class Configuration {
         try {
             config.load(App.class.getResourceAsStream(configFilePath));
         } catch (IOException e) {
-            Log.error(App.class, "Unable to read Configuration file %s: %s", configFilePath, e.getMessage());
+            error(App.class, "Unable to read Configuration file %s: %s", configFilePath, e.getMessage());
         }
     }
 
@@ -42,24 +43,38 @@ public class Configuration {
         switch (key) {
             case "debug", "d" -> {
                 App.setDebug(Integer.parseInt(value));
-                Log.info(App.class, "Debug level set to %d", App.getDebug());
+                info(App.class, "Debug level set to %d", App.getDebug());
             }
             case "configFile", "cf" -> {
                 configFilePath = value;
-                Log.info(App.class, "Configuration file set to %s", configFilePath);
+                info(App.class, "Configuration file set to %s", configFilePath);
             }
             case "app.window.size", "window", "w" -> {
                 App.setWindowSize(getDimensionFromString(value, "640x400"));
 
-                Log.info(App.class, "Window size set to %s", App.getWindowSize());
+                info(App.class, "Window size set to %s", App.getWindowSize());
             }
         }
     }
 
+    public <T> T getConfigValue(String key, String defaultValue) {
+        switch (key) {
+            case "app.window.size", "window" -> {
+                return (T) getDimensionFromString((String) config.getProperty(key), defaultValue);
+            }
+            case "app.debug.level", "debug", "dl" -> {
+                return (T) Integer.valueOf(config.getProperty(key, defaultValue));
+            }
+            default -> {
+                error(Configuration.class, "Unknown configuration key %s", key);
+                return null;
+            }
+        }
+    }
 
     private Dimension getDimensionFromString(String value, String defaultValue) {
         if (!value.contains("x")) {
-            Log.info(App.class, "%s is not a valid dimension, using default value %s", value, defaultValue);
+            info(App.class, "%s is not a valid dimension, using default value %s", value, defaultValue);
             return getDimensionFromString(defaultValue, null);
         }
         String[] parts = value.split("x");
@@ -67,7 +82,7 @@ public class Configuration {
             try {
                 return new Dimension(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
             } catch (NumberFormatException e) {
-                Log.error(App.class, "Unable to parse dimension %s: %s", value, e.getMessage());
+                error(App.class, "Unable to parse dimension %s: %s", value, e.getMessage());
             }
         }
         return null;
