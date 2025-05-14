@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class AbstractScene implements Scene {
+public abstract class AbstractScene implements Scene {
 
 
     private static List<Scene> scenes = new ArrayList<>();
