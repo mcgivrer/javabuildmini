@@ -6,16 +6,16 @@ import java.util.List;
 
 public class AbstractScene implements Scene {
 
-
     private static List<Scene> scenes = new ArrayList<>();
     protected final App app;
     protected World world = new World();
+
+    private Camera currentCamera;
 
     private String name = "default";
     private static Scene currentScene;
 
     private List<Entity> entities = new ArrayList<>();
-
 
     public AbstractScene(App app, String name) {
         this.app = app;
@@ -96,5 +96,15 @@ public class AbstractScene implements Scene {
     public World getWorld() {
         return world;
     }
+
+    @Override
+    public Camera getCurrentCamera() {
+        return currentCamera;
+    }
+
+    protected void setCamera(Camera cam) {
+        this.currentCamera = cam;
+    }
+
 
 }

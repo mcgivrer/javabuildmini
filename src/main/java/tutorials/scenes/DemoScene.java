@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
 import static tutorials.InputHandler.isKeyPressed;
 
 public class DemoScene extends AbstractScene implements Scene {
+
     public DemoScene(App app, String name) {
         super(app, name);
     }
@@ -51,7 +52,10 @@ public class DemoScene extends AbstractScene implements Scene {
         add(player);
 
         generateEntity("enemy_%d", 100, Color.RED, Color.RED.darker());
-        Log.info(this.getClass(), "End of Initialization.");
+
+        setCamera(new Camera("cam01").setTarget(player).setTweenFactor(0.02).setViewport(640, 400));
+
+        Log.info(this.getClass(), "End of Scene initialization.");
     }
 
     private void generateEntity(String rootName, int nb, Color color, Color fillColor) {

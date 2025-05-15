@@ -117,9 +117,13 @@ public class App extends JPanel {
             // friction in World
             e.setVelocity(e.dx * (world.getFriction()),
                     e.dy * (world.getFriction()));
+
             // maximize speed
             e.setVelocity(maximize(e.getVelocity(), maxSpeed, maxSpeed));
         });
+        if (scene.getCurrentCamera() != null) {
+            scene.getCurrentCamera().update(this, elapsed);
+        }
     }
 
     private Point2D maximize(Point2D velocity, double mxVx, double mxVy) {

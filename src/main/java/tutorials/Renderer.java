@@ -20,10 +20,19 @@ public class Renderer {
         JFrame window = app.getWindow();
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, window.getWidth(), window.getHeight());
-        AbstractScene.getCurrentScene().getEntities().stream().filter(Entity::isActive).forEach(e -> {
+        Scene scene = AbstractScene.getCurrentScene();
+        if (scene.getCurrentCamera() != null) {
+            g.translate(-scene.getCurrentCamera().getX(), -scene.getCurrentCamera().getY());
+        }
+        scene.getEntities().stream().filter(Entity::isActive).forEach(e -> {
             drawEntity(g, e);
 
         });
+        if (scene.getCurrentCamera() != null) {
+            g.setColor(Color.GRAY);
+            g.draw(scene.getCurrentCamera());
+            g.translate(scene.getCurrentCamera().getX(), scene.getCurrentCamera().getY());
+        }
     }
 
     private void drawEntity(Graphics2D g, Entity e) {
