@@ -77,7 +77,6 @@ public class App extends JPanel {
                     Scene scene = AbstractScene.getCurrentScene();
                     scene.getActiveCamera().setViewport(window.getWidth(), window.getHeight());
                     scene.resize(window);
-
                 }
             }
         });

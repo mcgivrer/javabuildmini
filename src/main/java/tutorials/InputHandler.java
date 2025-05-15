@@ -24,7 +24,7 @@ public class InputHandler implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         keys[e.getKeyCode()] = true;
-        debug(InputHandler.class, 5, "Key pressed: %d", e.getKeyCode());
+        //debug(InputHandler.class, 5, "Key pressed: %d", e.getKeyCode());
     }
 
     @Override

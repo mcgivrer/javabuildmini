@@ -13,7 +13,6 @@ public interface Scene {
     default void render(Graphics2D g) {
     }
 
-
     default void dispose() {
     }
 
@@ -29,5 +28,4 @@ public interface Scene {
 
     void resize(JFrame window);
 
-    ;
 }

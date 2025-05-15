@@ -1,6 +1,7 @@
 package tutorials;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 
 public class TextEntity extends Entity {
     private String text;
@@ -14,6 +15,7 @@ public class TextEntity extends Entity {
     public TextEntity(String name) {
         super(name);
         setType(PhysicType.STATIC);
+        setShape(new Rectangle2D.Double(0, 0, 0, 0));
     }
 
     public TextEntity setText(String text) {

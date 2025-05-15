@@ -6,6 +6,7 @@ import tutorials.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.geom.Ellipse2D;
 
 import static tutorials.InputHandler.isKeyPressed;
 
@@ -23,31 +24,28 @@ public class DemoScene extends AbstractScene implements Scene {
         Entity player = new Entity("player",
                 (window.getWidth() - 16) * 0.5,
                 (window.getHeight() - 24) * 0.5,
-                16,
-                24)
+                32,
+                48)
                 .setMass(80.0)
                 .setMaterial(Material.PLASTIC)
-                .setPriority(1)
-                .add(new Behavior<Entity>() {
-                    @Override
-                    public void update(App app, Entity e, double deltaTime) {
-                        double step = 10.5;
-                        if (isKeyPressed(KeyEvent.VK_UP)) {
-                            e.addVelocity(0, -step * 5);
-                        }
-                        if (isKeyPressed(KeyEvent.VK_DOWN)) {
-                            e.addVelocity(0, step);
-                        }
-                        if (isKeyPressed(KeyEvent.VK_LEFT)) {
-                            e.addVelocity(-step, 0);
-                        }
-                        if (isKeyPressed(KeyEvent.VK_RIGHT)) {
-                            e.addVelocity(step, 0);
-                        }
-                        if (isKeyPressed(KeyEvent.VK_SPACE)) {
-                            e.dy *= 0.9;
-                            e.dx *= 0.9;
-                        }
+                .setPriority(5)
+                .add((app, e, deltaTime) -> {
+                    double step = 10.5;
+                    if (isKeyPressed(KeyEvent.VK_UP)) {
+                        e.addVelocity(0, -step * 5);
+                    }
+                    if (isKeyPressed(KeyEvent.VK_DOWN)) {
+                        e.addVelocity(0, step);
+                    }
+                    if (isKeyPressed(KeyEvent.VK_LEFT)) {
+                        e.addVelocity(-step, 0);
+                    }
+                    if (isKeyPressed(KeyEvent.VK_RIGHT)) {
+                        e.addVelocity(step, 0);
+                    }
+                    if (isKeyPressed(KeyEvent.VK_SPACE)) {
+                        e.dy *= 0.9;
+                        e.dx *= 0.9;
                     }
                 });
         add(player);
@@ -94,13 +92,19 @@ public class DemoScene extends AbstractScene implements Scene {
 
     private void generateEntity(String rootName, int nb, Color color, Color fillColor) {
         for (int i = 0; i < nb; i++) {
+            Color eColor = Utils.randomColor(0.8f, 0.8f, 0.8f, 1.0f);
+
             Entity enemy = new Entity(rootName.formatted(i),
-                    Math.random() * world.getWidth(), Math.random() * world.getHeight(), 8, 8)
-                    .setColor(color)
-                    .setFillColor(fillColor)
+                    Math.random() * world.getWidth(), Math.random() * world.getHeight(),
+                    16, 16)
+                    .setColor(eColor)
+                    .setFillColor(eColor.darker())
                     .setMaterial(Material.RUBBER)
                     .setMass(10.0)
-                    .setPriority(10 + i);
+                    .setAlpha((float) Math.random())
+                    .setPriority((int) (Math.random() * 10));
+            enemy.setShape(new Ellipse2D.Double(enemy.getX(), enemy.getY(), enemy.getWidth(), enemy.getHeight()));
+
             add(enemy);
         }
     }

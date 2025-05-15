@@ -1,6 +1,7 @@
 package tutorials;
 
 import java.awt.*;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -26,6 +27,9 @@ public class Entity extends Rectangle2D.Double {
     protected List<Behavior> behaviors = new ArrayList<>();
     private int priority = 0;
     private boolean stickToViewport = false;
+    private float alpha = 1.0f;
+
+    private Shape shape;
 
     public Entity() {
         super();
@@ -40,6 +44,7 @@ public class Entity extends Rectangle2D.Double {
         super(x, y, width, height);
         this.name = name;
         setType(PhysicType.DYNAMIC);
+        setShape(new Rectangle2D.Double(x, y, width, height));
     }
 
 
@@ -110,6 +115,17 @@ public class Entity extends Rectangle2D.Double {
         return (T) this;
     }
 
+    public <T extends Entity> T setAlpha(float a) {
+        this.alpha = a;
+        return (T) this;
+    }
+
+
+    public <T extends Entity> T setShape(Shape s) {
+        this.shape = s;
+        return (T) this;
+    }
+
     public String getName() {
         return name;
     }
@@ -164,6 +180,18 @@ public class Entity extends Rectangle2D.Double {
         return stickToViewport;
     }
 
+    public float getAlpha() {
+        return alpha;
+    }
+
+    public Shape getShape() {
+        if (shape instanceof Rectangle2D.Double) {
+            return new Rectangle2D.Double(x, y, width, height);
+        } else if (shape instanceof Ellipse2D.Double) {
+            return new Ellipse2D.Double(x, y, width, height);
+        }
+        return null;
+    }
 
     @Override
     public String toString() {
@@ -179,4 +207,6 @@ public class Entity extends Rectangle2D.Double {
                 ", active=" + active +
                 '}';
     }
+
+
 }

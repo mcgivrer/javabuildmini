@@ -20,6 +20,9 @@ public class Renderer {
                 RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON
         ));
         JFrame window = app.getWindow();
+        // scaling the image
+        //g.scale(1.5, 1.5);
+        // drawing wth transparent factor
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, window.getWidth(), window.getHeight());
         Scene scene = AbstractScene.getCurrentScene();
@@ -61,13 +64,14 @@ public class Renderer {
     }
 
     private void drawEntity(Graphics2D g, Entity e) {
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, e.getAlpha()));
         if (e.getFillColor() != null) {
             g.setColor(e.getFillColor());
-            g.fill(e);
+            g.fill(e.getShape());
         }
         if (e.getColor() != null) {
             g.setColor(e.getColor());
-            g.draw(e);
+            g.draw(e.getShape());
         }
     }
 

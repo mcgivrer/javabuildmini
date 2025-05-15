@@ -9,5 +9,4 @@ public record Material(String name, double friction, double elasticity, double d
     public static final Material GLASS = new Material("Glass", 0.7, 0.3, 2.5);
     public static final Material CONCRETE = new Material("Concrete", 0.65, 0.25, 2.4);
     public static final Material PLASTIC = new Material("Plastic", 0.5, 0.4, 0.95);
-
 }
