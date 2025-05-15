@@ -17,15 +17,12 @@ public class DemoScene extends AbstractScene implements Scene {
 
     @Override
     public void init() {
+        Log.info(this.getClass(), "Initializing...");
         app.getRenderer().addVFX(new OldTerminalVFX(0.3f));
+
         JFrame window = app.getWindow();
-        world.setSkyColors(
-                        new Color(0.9f, 0.8f, 0.1f),
-                        new Color(0.9f, 0.8f, 0.1f),
-                        new Color(0.1f, 0.2f, 0.7f),
-                        new Color(0.1f, 0.3f, 0.7f)
-                )
-                .setFillColor(new Color(0.0f, 0.4f, 0.8f))
+
+        world.setFillColor(new Color(0.0f, 0.4f, 0.8f))
                 .setSize(window.getWidth(), window.getHeight())
                 .add((Behavior<World>) (app, w, deltaTime) -> {
                     if (isKeyPressed(KeyEvent.VK_PAGE_UP)) {
@@ -36,7 +33,10 @@ public class DemoScene extends AbstractScene implements Scene {
                     }
                 });
 
-        Log.info(this.getClass(), "Initializing...");
+        add(new Sky("sky").setWorld(world).setPriority(-9));
+        add(new StarSky("stars", world, 100).setPriority(-8));
+        add(new Sun("sun").setWorld(world).setPriority(-7));
+
         Entity player = new Entity("player",
                 (window.getWidth() - 16) * 0.5,
                 (window.getHeight() - 24) * 0.5,
@@ -86,6 +86,20 @@ public class DemoScene extends AbstractScene implements Scene {
                 .setFont(app.getWindow().getGraphics().getFont().deriveFont(26.0f))
                 .setPosition(app.getWindow().getWidth() - 50, 56)
                 .setStickToViewport(true));
+
+        add(new TextEntity("time")
+                .setText("00:00")
+                .setTextColor(Color.WHITE)
+                .setShadowColor(Color.BLACK)
+                .setFont(app.getWindow().getGraphics().getFont().deriveFont(14.0f))
+                .setPosition(app.getWindow().getWidth() * 0.5, 56)
+                .setStickToViewport(true)
+                .add((Behavior<TextEntity>) (app, e, deltaTime) -> {
+                    int hour = (int) (world.getDayTime() % 24);
+                    int minute = (int) (Math.round((world.getDayTime()) * 60) % 60);
+                    e.setText("%02d:%02d".formatted(hour, minute));
+                }));
+
         // define the new active camera for the scene.
         add(new Camera("cam01")
                 .setOffset(40, 40)

@@ -214,4 +214,7 @@ public class Entity extends Rectangle2D.Double {
     }
 
 
+    public void draw(Graphics2D g) {
+
+    }
 }

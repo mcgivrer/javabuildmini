@@ -51,7 +51,6 @@ public class Renderer {
     private void postProcessing(Graphics2D g) {
         for (VFXDraw vfx : postProcessingVFXs) {
             vfx.update(g, app.getWindow());
-
         }
 
     }
@@ -66,14 +65,18 @@ public class Renderer {
                     if (e instanceof TextEntity te) {
                         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, te.getAlpha()));
                         drawText(g, te.getText(),
-                                (int) te.getX(), (int) te.getY(),
-                                te.getColor(),
+                                (int) te.getX() + 2, (int) te.getY() + 2,
+                                te.getShadowColor(),
                                 te.getFont(),
                                 te.getTextAlign());
-
+                        drawText(g, te.getText(),
+                                (int) te.getX(), (int) te.getY(),
+                                te.getTextColor(),
+                                te.getFont(),
+                                te.getTextAlign());
                         te.setSize(app.getGraphics().getFontMetrics().stringWidth(te.getText()), app.getGraphics().getFontMetrics().getHeight());
-                    } else if (e instanceof World w) {
-                        w.draw(g);
+                    } else if ("World Sun Sky StarSky".contains(e.getClass().getSimpleName())) {
+                        e.draw(g);
                     } else {
                         drawEntity(g, e);
                     }
