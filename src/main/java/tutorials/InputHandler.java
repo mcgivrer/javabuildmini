@@ -39,6 +39,10 @@ public class InputHandler implements KeyListener {
                 debug(App.class, 0, "Debug level set to %d", App.getDebug());
                 App.setDebug(App.getDebug() + 1 > 6 ? 0 : App.getDebug() + 1);
             }
+            case KeyEvent.VK_F12 -> {
+                app.getRenderer().setVFX(!app.getRenderer().getVFX());
+                info(InputHandler.class,"VFX settings toggled");
+            }
         }
     }
 

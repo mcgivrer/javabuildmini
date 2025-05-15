@@ -36,8 +36,8 @@ public class Camera extends Entity {
     public void update(double deltaTime) {
         if (target != null) {
 
-            double targetX = target.getX() - (getWidth() + target.getWidth()) / 2;
-            double targetY = target.getY() - (getHeight() + target.getHeight()) / 2;
+            double targetX = (target.getX() - (getWidth() - target.getWidth()) * 0.5);
+            double targetY = (target.getY() - (getHeight() - target.getHeight()) * 0.75);
             double newX = getX() + (targetX - getX()) * tweenFactor * deltaTime;
             double newY = getY() + (targetY - getY()) * tweenFactor * deltaTime;
             setPosition(newX, newY);

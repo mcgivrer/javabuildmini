@@ -53,6 +53,11 @@ public class Entity extends Rectangle2D.Double {
         return (T) this;
     }
 
+
+    public void update(long elapsed) {
+        // nothing by default.
+    }
+
     public <T extends Entity> T setPosition(double x, double y) {
         setRect(x, y, width, height);
         return (T) this;

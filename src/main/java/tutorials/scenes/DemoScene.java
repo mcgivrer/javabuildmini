@@ -2,7 +2,6 @@ package tutorials.scenes;
 
 import tutorials.*;
 
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -17,8 +16,24 @@ public class DemoScene extends AbstractScene implements Scene {
 
     @Override
     public void init() {
+        app.getRenderer().addVFX(new OldTerminalVFX(0.3f));
         JFrame window = app.getWindow();
-        world.setRect(0, 0, window.getWidth(), window.getHeight());
+        world.setSkyColors(
+                        new Color(0.9f, 0.8f, 0.1f),
+                        new Color(0.9f, 0.8f, 0.1f),
+                        new Color(0.1f, 0.2f, 0.7f),
+                        new Color(0.1f, 0.3f, 0.7f)
+                )
+                .setFillColor(new Color(0.0f, 0.4f, 0.8f))
+                .setSize(window.getWidth(), window.getHeight())
+                .add((Behavior<World>) (app, w, deltaTime) -> {
+                    if (isKeyPressed(KeyEvent.VK_PAGE_UP)) {
+                        w.setDayTime(w.getDayTime() + 0.05f % 24);
+                    }
+                    if (isKeyPressed(KeyEvent.VK_PAGE_DOWN)) {
+                        w.setDayTime(w.getDayTime() - 0.05f % 24);
+                    }
+                });
 
         Log.info(this.getClass(), "Initializing...");
         Entity player = new Entity("player",
