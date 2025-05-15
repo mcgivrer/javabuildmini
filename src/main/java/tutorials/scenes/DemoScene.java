@@ -17,8 +17,16 @@ public class DemoScene extends AbstractScene implements Scene {
 
     @Override
     public void init() {
+        app.getRenderer().addVFX(new OldTerminalVFX(0.3f));
         JFrame window = app.getWindow();
         world.setRect(0, 0, window.getWidth(), window.getHeight());
+        world.setFillColor(new Color(0.0f, 0.4f, 0.8f));
+        world.setSkyColors(
+                new Color(0.9f, 0.8f, 0.1f),
+                new Color(0.9f, 0.8f, 0.1f),
+                new Color(0.1f, 0.2f, 0.7f),
+                new Color(0.1f, 0.3f, 0.7f)
+        );
 
         Log.info(this.getClass(), "Initializing...");
         Entity player = new Entity("player",

@@ -16,6 +16,7 @@ public class TextEntity extends Entity {
         super(name);
         setType(PhysicType.STATIC);
         setShape(new Rectangle2D.Double(0, 0, 0, 0));
+        setAlpha(1.0f);
     }
 
     public TextEntity setText(String text) {

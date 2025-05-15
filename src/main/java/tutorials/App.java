@@ -119,6 +119,7 @@ public class App extends JPanel {
                     for (Behavior b : e.getBehaviors()) {
                         b.update(this, e, elapsed);
                     }
+                    e.update(elapsed);
                     if (e.getType() == PhysicType.DYNAMIC) {
                         e.setPosition(
                                 e.x + (((e.dx + world.getGravity().getX()) * world.getMaterial().friction() / e.getMass()) * elapsed),
@@ -167,7 +168,8 @@ public class App extends JPanel {
     public void render() {
         BufferStrategy bs = window.getBufferStrategy();
         Graphics2D g = (Graphics2D) bs.getDrawGraphics();
-        renderer.draw(g);
+        Scene scene = AbstractScene.getCurrentScene();
+        renderer.draw(g, scene);
 
         g.dispose();
         bs.show();
@@ -212,5 +214,9 @@ public class App extends JPanel {
 
     public static void setExit(boolean ex) {
         exit = ex;
+    }
+
+    public Renderer getRenderer() {
+        return renderer;
     }
 }

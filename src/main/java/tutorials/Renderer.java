@@ -2,36 +2,37 @@ package tutorials;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.List;
 
 public class Renderer {
 
     private final App app;
+    private List<VFXDraw> postProcessingVFXs = new ArrayList<>();
+    private boolean vfxActive = true;
 
     Renderer(App app) {
         this.app = app;
     }
 
-    public void draw(Graphics2D g) {
+    public void draw(Graphics2D g, Scene scene) {
         g.setRenderingHints(Map.of(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON,
                 RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY,
                 RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON
         ));
         JFrame window = app.getWindow();
-        // scaling the image
-        //g.scale(1.5, 1.5);
-        // drawing wth transparent factor
+        // clear drawing.
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, window.getWidth(), window.getHeight());
-        Scene scene = AbstractScene.getCurrentScene();
+        // move camera.
         if (Optional.ofNullable(scene.getActiveCamera()).isPresent()) {
             g.translate(
                     -scene.getActiveCamera().getPosition().getX(),
                     -scene.getActiveCamera().getPosition().getY());
         }
+        // draw entities in scene
         drawEntities(g, scene, false);
+        // move back camera
         if (Optional.ofNullable(scene.getActiveCamera()).isPresent()) {
             Camera cam = scene.getActiveCamera();
             g.draw(cam.getViewport());
@@ -39,7 +40,20 @@ public class Renderer {
                     cam.getPosition().getX(),
                     cam.getPosition().getY());
         }
+        // draw camera fixed entities
         drawEntities(g, scene, true);
+        // draw postprocessed visual effects.
+        if (vfxActive) {
+            postProcessing(g);
+        }
+    }
+
+    private void postProcessing(Graphics2D g) {
+        for (VFXDraw vfx : postProcessingVFXs) {
+            vfx.update(g, app.getWindow());
+
+        }
+
     }
 
     private void drawEntities(Graphics2D g, Scene scene, boolean stickToViewport) {
@@ -50,6 +64,7 @@ public class Renderer {
                 .sorted(Comparator.comparingInt(Entity::getPriority))
                 .forEach(e -> {
                     if (e instanceof TextEntity te) {
+                        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, te.getAlpha()));
                         drawText(g, te.getText(),
                                 (int) te.getX(), (int) te.getY(),
                                 te.getColor(),
@@ -57,6 +72,8 @@ public class Renderer {
                                 te.getTextAlign());
 
                         te.setSize(app.getGraphics().getFontMetrics().stringWidth(te.getText()), app.getGraphics().getFontMetrics().getHeight());
+                    } else if (e instanceof World w) {
+                        w.draw(g);
                     } else {
                         drawEntity(g, e);
                     }
@@ -87,5 +104,19 @@ public class Renderer {
             }
         }
         g.drawString(message, x, y);
+    }
+
+    public void addVFX(VFXDraw vfx) {
+        if (!this.postProcessingVFXs.contains(vfx)) {
+            this.postProcessingVFXs.add(vfx);
+        }
+    }
+
+    public void setVFX(boolean active) {
+        this.vfxActive = active;
+    }
+
+    public boolean getVFX() {
+        return this.vfxActive;
     }
 }
