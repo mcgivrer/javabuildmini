@@ -23,7 +23,7 @@ public class Sun extends Entity {
 
     private float getSunBrightness(float heure) {
         // Le soleil se lève à 6h, culmine à 12h, se couche à 18h
-        if (heure < 6f || heure > 18f) return 0f;
+        if (heure < 4f || heure > 18f) return 0f;
         if (heure <= 12f) return (heure - 6f) / 6f;      // 6h -> 12h : 0 -> 1
         else return (18f - heure) / 6f;                  // 12h -> 18h : 1 -> 0
     }
@@ -69,7 +69,7 @@ public class Sun extends Entity {
         double heuresLumiere = 2 * Math.acos(-Math.tan(phi) * Math.tan(delta)) * 12 / Math.PI;
 
         // 3. Heures lever/coucher dynamiques
-        float lever = (float) (12 - heuresLumiere / 2);
+        float lever = (float) (14 - heuresLumiere / 2);
         float coucher = (float) (12 + heuresLumiere / 2);
 
         // 4. Position horizontale et verticale
