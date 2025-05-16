@@ -19,9 +19,8 @@ public class StarSky extends Entity {
 
     private void initStars(int nbMaxStars) {
         Random rand = new Random(1234);
-        int nbEtoiles = 80;
-        int rayonMax = (int) (world.getWidth() * 0.8); // rayon maximal autour du zénith
-        for (int i = 0; i < nbEtoiles; i++) {
+        int rayonMax = (int) (world.getWidth() * 0.9); // rayon maximal autour du zénith
+        for (int i = 0; i < nbMaxStars; i++) {
             double rayon = 30 + rand.nextDouble() * (rayonMax - 30);
             double angle = rand.nextDouble() * 2 * Math.PI;
             int taille = 1 + rand.nextInt(2);
