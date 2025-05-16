@@ -1,21 +1,29 @@
 package tutorials;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 
-public class Sky extends Entity{
+public class Sky extends Entity {
     private World world;
+    private Rectangle2D viewport;
 
     public Sky(String name) {
         super(name);
     }
-    public Sky setWorld(World w){
+
+    public Sky setWorld(World w) {
         this.world = w;
         return this;
     }
 
-    public void draw(Graphics2D g){
-        int w = (int) world.getWidth();
-        int h = (int) world.getHeight();
+    public Sky setViewport(Rectangle2D viewport) {
+        this.viewport = viewport;
+        return this;
+    }
+
+    public void draw(Graphics2D g) {
+        int w = (int) viewport.getWidth();
+        int h = (int) viewport.getHeight();
         // Calcul des couleurs en fonction du temps
         Color[] couleursCiel = calculerPalette(world.getDayTime());
         float[] positions = {0f, 0.4f, 0.7f, 1f};
@@ -96,7 +104,6 @@ public class Sky extends Entity{
                 hsb(0.65f, 0.4f, 0.3f * t + 0.5f * (1 - t))
         };
     }
-
 
 
     private Color[] interpolatePalette(Color[] palette1, Color[] palette2, float t) {

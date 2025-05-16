@@ -4,11 +4,13 @@ import tutorials.Entity;
 import tutorials.World;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.time.LocalDate;
 
 public class Sun extends Entity {
 
     private World world;
+    private Rectangle2D viewport;
     private double latitude = 45.0; // Latitude de Paris
 
     public Sun(String name) {
@@ -21,40 +23,16 @@ public class Sun extends Entity {
         return this;
     }
 
+    public Sun setViewport(Rectangle2D viewport) {
+        this.viewport = viewport;
+        return this;
+    }
+
     private float getSunBrightness(float heure) {
         // Le soleil se lève à 6h, culmine à 12h, se couche à 18h
         if (heure < 4f || heure > 18f) return 0f;
         if (heure <= 12f) return (heure - 6f) / 6f;      // 6h -> 12h : 0 -> 1
         else return (18f - heure) / 6f;                  // 12h -> 18h : 1 -> 0
-    }
-
-    private Point getOldSunPosition(int width, int height, float heure) {
-        // Paramètres de la "journée"
-        float heureLever = 6f;
-        float heureCoucher = 21f;
-        float dureeJour = heureCoucher - heureLever;
-
-        // Si le soleil est sous l’horizon
-        if (heure < heureLever || heure > heureCoucher) {
-            // Place le soleil sous l’horizon (ex : en bas du panneau)
-            return new Point(width / 2, height + 100); // 100px sous le panneau
-        }
-
-        // Progression du soleil dans la journée (0 à 1)
-        float t = (heure - heureLever) / dureeJour;
-
-        // Calcul de l’angle (0 = lever, PI = coucher)
-        double angle = Math.PI * t;
-
-        // Rayon de la trajectoire (distance verticale maximale)
-        int r = (int) (height * 1.0);
-
-        // Position horizontale (centre)
-        int x = width / 2;
-        // Position verticale : plus bas à l’horizon, plus haut au zénith
-        int y = (int) ((height + 100) * 0.95 - r * Math.sin(angle));
-
-        return new Point(x, y);
     }
 
     private Point getSunPosition(int width, int height, float heure) {
@@ -73,12 +51,12 @@ public class Sun extends Entity {
         float coucher = (float) (12 + heuresLumiere / 2);
 
         // 4. Position horizontale et verticale
-        if (heure < lever || heure > coucher+2)
-            return new Point((int)world.getWidth() / 2, (int)world.getHeight()+100); // Soleil caché
+        if (heure < lever || heure > coucher + 2)
+            return new Point((int) viewport.getWidth() / 2, (int) viewport.getHeight() + 100); // Soleil caché
 
         float progression = (heure - lever) / (coucher - lever);
-        int x = (int)world.getWidth() / 2 + (int) (width * 0.3 * Math.sin(progression * Math.PI - Math.PI / 2));
-        int y = (int) ((int)world.getHeight() * 1.0 - world.getHeight() * 0.8 * Math.cos(delta) * Math.sin(progression * Math.PI));
+        int x = (int) viewport.getWidth() / 2 + (int) (width * 0.3 * Math.sin(progression * Math.PI - Math.PI / 2));
+        int y = (int) ((int) viewport.getHeight() * 1.0 - viewport.getHeight() * 0.8 * Math.cos(delta) * Math.sin(progression * Math.PI));
 
         return new Point(x, y);
     }
@@ -86,7 +64,7 @@ public class Sun extends Entity {
     @Override
     public void update(long elapsed) {
         float heure = world.getDayTime();
-        Point sunPos = getSunPosition((int) world.getWidth(), (int) world.getHeight(), heure);
+        Point sunPos = getSunPosition((int) viewport.getWidth(), (int) viewport.getHeight(), heure);
         this.x = sunPos.x - width * 0.5;
         this.y = sunPos.y - height * 0.5;
     }

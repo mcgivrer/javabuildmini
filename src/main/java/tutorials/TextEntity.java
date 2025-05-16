@@ -68,4 +68,8 @@ public class TextEntity extends Entity {
         return align;
     }
 
+    public TextEntity setTextAlign(TextAlign textAlign) {
+        this.align = textAlign;
+        return this;
+    }
 }
