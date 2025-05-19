@@ -14,13 +14,17 @@ public class SnowWeatherEffect extends Entity implements WeatherEffect {
     private World world;
 
     public SnowWeatherEffect(World world, int nb) {
-        for (int i = 0; i < nb; i++) snowflakes.add(new SnowFlake((int) world.getWidth(), (int) world.getHeight(), new Random()));
+        this.world = world;
+        for (int i = 0; i < nb; i++)
+            snowflakes.add(new SnowFlake((int) world.getWidth(), (int) world.getHeight(), new Random()));
     }
 
-    public void update(double elapsed) {
+    @Override
+    public void update(long elapsed) {
         for (SnowFlake f : snowflakes) f.update((int) world.getWidth(), (int) world.getHeight(), elapsed);
     }
 
+    @Override
     public void draw(Graphics2D g) {
         for (SnowFlake f : snowflakes) {
             g.setColor(new Color(255, 255, 255, 200));
