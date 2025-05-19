@@ -1,5 +1,6 @@
 package tutorials.weather;
 
+import tutorials.Entity;
 import tutorials.World;
 
 import java.awt.*;
@@ -7,12 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class RainWeatherEffect implements WeatherEffect {
+public class RainWeatherEffect extends Entity implements WeatherEffect {
 
     private final World world;
     public List<Drop> drops = new ArrayList<>();
 
-    public RainWeatherEffect(World world, int nb) {
+    public RainWeatherEffect(String name, World world, int nb) {
+        super(name);
         this.world = world;
         for (int i = 0; i < nb; i++) drops.add(new Drop((int) world.getWidth(), (int) world.getHeight(), new Random()));
     }

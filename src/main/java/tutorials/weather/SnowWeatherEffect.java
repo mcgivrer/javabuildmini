@@ -13,7 +13,8 @@ public class SnowWeatherEffect extends Entity implements WeatherEffect {
 
     private World world;
 
-    public SnowWeatherEffect(World world, int nb) {
+    public SnowWeatherEffect(String name, World world, int nb) {
+        super(name);
         this.world = world;
         for (int i = 0; i < nb; i++)
             snowflakes.add(new SnowFlake((int) world.getWidth(), (int) world.getHeight(), new Random()));

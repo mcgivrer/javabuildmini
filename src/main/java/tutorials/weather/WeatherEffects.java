@@ -14,7 +14,7 @@ import java.util.Random;
 public class WeatherEffects extends Entity {
 
     private final World world;
-    private List<WeatherEffect> effets = new ArrayList<>();
+    private List<Entity> effets = new ArrayList<>();
     private Season season;
     private Random rand = new Random();
 
@@ -31,18 +31,19 @@ public class WeatherEffects extends Entity {
         switch (season) {
             case WINTER:
                 if (rand.nextBoolean()) effets.add(new CloudyWeatherEffect("clouds", world));
-                if (rand.nextBoolean()) effets.add(new SnowWeatherEffect(world, 80));
+                if (rand.nextBoolean()) effets.add(new SnowWeatherEffect("snow", world, 80));
+                //if (rand.nextBoolean()) effets.add(new WindWeatherEffect("wind",world));
                 break;
             case SUMMER:
-                //if (rand.nextInt(4) == 0) effets.add(new EffetOrage(800, 600)); // orage rare
-                //else if (rand.nextBoolean()) effets.add(new EffetChaleur());
-                //if (rand.nextBoolean()) effets.add(new EffetVent());
+                //if (rand.nextInt(4) == 0) effets.add(new StormWeatherEffect("storm",world)); // orage rare
+                //else if (rand.nextBoolean()) effets.add(new HotWaveWeatherEffect("hotWave",world));
+                //if (rand.nextBoolean()) effets.add(new WindWeatherEffect("wind",world));
                 break;
             case MID_SEASON:
                 if (rand.nextBoolean()) effets.add(new CloudyWeatherEffect("clouds", world));
-                if (rand.nextBoolean()) effets.add(new RainWeatherEffect(world, 80));
-                //if (rand.nextBoolean()) effets.add(new EffetVent());
-                //if (season == Saison.AUTOMNE && rand.nextBoolean()) effets.add(new EffetFeuilles());
+                if (rand.nextBoolean()) effets.add(new RainWeatherEffect("rain", world, 80));
+                //if (rand.nextBoolean()) effets.add(new WindWeatherEffect("wind",world));
+                //if (season == Saison.AUTOMNE && rand.nextBoolean()) effets.add(new AutumnFallEffect("autumnFall",world));
                 break;
         }
     }
