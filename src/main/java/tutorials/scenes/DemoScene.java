@@ -2,6 +2,10 @@ package tutorials.scenes;
 
 import tutorials.*;
 import tutorials.weather.WeatherEffects;
+import tutorials.sfx.OldTerminalVFX;
+import tutorials.simulation.Sky;
+import tutorials.simulation.StarSky;
+import tutorials.simulation.Sun;
 
 
 import javax.swing.*;
@@ -9,6 +13,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Ellipse2D;
 import java.time.LocalDate;
+import java.awt.geom.Rectangle2D;
 
 import static tutorials.InputHandler.isKeyPressed;
 
@@ -61,6 +66,7 @@ public class DemoScene extends AbstractScene implements Scene {
                 .setMass(80.0)
                 .setMaterial(Material.PLASTIC)
                 .setPriority(5)
+                .setShape(new Rectangle2D.Double())
                 .add((app, e, deltaTime) -> {
                     double step = 10.5;
                     if (isKeyPressed(KeyEvent.VK_UP)) {
@@ -80,7 +86,6 @@ public class DemoScene extends AbstractScene implements Scene {
                         e.dx *= 0.9;
                     }
                 });
-
         add(player);
 
         generateEntity("enemy_%d", 100, Color.RED, Color.RED.darker());

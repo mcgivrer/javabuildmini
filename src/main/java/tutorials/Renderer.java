@@ -1,5 +1,7 @@
 package tutorials;
 
+import tutorials.sfx.VFXDraw;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
@@ -7,11 +9,13 @@ import java.util.List;
 
 public class Renderer {
 
+    private final App app;
     private final JFrame window;
     private List<VFXDraw> postProcessingVFXs = new ArrayList<>();
     private boolean vfxActive = true;
 
-    Renderer(JFrame window) {
+    Renderer(App app, JFrame window) {
+        this.app = app;
         this.window = window;
     }
 
@@ -33,6 +37,9 @@ public class Renderer {
         if (vfxActive) {
             postProcessing(g);
         }
+        if (app.getHelpDisplay()) {
+            drawHelpText(g, scene);
+        }
     }
 
     private void postProcessing(Graphics2D g) {
@@ -53,7 +60,7 @@ public class Renderer {
                                 -scene.getActiveCamera().getPosition().getX(),
                                 -scene.getActiveCamera().getPosition().getY());
                     }
-                    drawEntity(g, e);
+                    e.draw(g);
                     if (!e.isStickToViewport() && Optional.ofNullable(scene.getActiveCamera()).isPresent()) {
                         Camera cam = scene.getActiveCamera();
                         g.draw(cam.getViewport());
@@ -62,12 +69,33 @@ public class Renderer {
                                 cam.getPosition().getY());
                     }
                 });
+
     }
 
-    private void drawEntity(Graphics2D g, Entity e) {
-        e.draw(g);
+    private void drawHelpText(Graphics2D g, Scene scene) {
+        if (Optional.ofNullable(scene.getActiveCamera()).isPresent()) {
+            g.translate(
+                    -scene.getActiveCamera().getPosition().getX(),
+                    -scene.getActiveCamera().getPosition().getY());
+        }
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+        g.setFont(g.getFont().deriveFont(12.0f));
+        String[] help = app.messages.getString("app.display.help").split("\\|");
+        int height = window.getHeight() - help.length * g.getFontMetrics().getHeight();
+        for (int i = 0; i < help.length; i++) {
+            g.setColor(Color.BLACK);
+            g.drawString(help[i], 20 + 1, height + (i * g.getFontMetrics().getHeight()) + 1);
+            g.setColor(Color.WHITE);
+            g.drawString(help[i], 20, height + (i * g.getFontMetrics().getHeight()));
+        }
+        if (Optional.ofNullable(scene.getActiveCamera()).isPresent()) {
+            Camera cam = scene.getActiveCamera();
+            g.draw(cam.getViewport());
+            g.translate(
+                    cam.getPosition().getX(),
+                    cam.getPosition().getY());
+        }
     }
-
 
     public void addVFX(VFXDraw vfx) {
         if (!this.postProcessingVFXs.contains(vfx)) {

@@ -1,4 +1,4 @@
-package tutorials;
+package tutorials.sfx;
 
 import javax.swing.*;
 import java.awt.*;

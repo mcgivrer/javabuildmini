@@ -1,4 +1,8 @@
-package tutorials;
+package tutorials.simulation;
+
+import tutorials.Entity;
+import tutorials.Utils;
+import tutorials.World;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -43,9 +47,9 @@ public class Sky extends Entity {
 
 
     private Color[] calculerPalette(float heure) {
-        if (heure < 6f) return paletteNuit();
-        else if (heure < 8f) {
-            float t = (heure - 6f) / 2f;
+        if (heure < 4.5f) return paletteNuit();
+        else if (heure < 6f) {
+            float t = (heure - 8f) / 1.5f;
             return interpolatePalette(paletteNuit(), paletteAube(heure), t);
         } else if (heure < 18f) {
             float t = (heure - 8f) / 10f;
@@ -76,7 +80,7 @@ public class Sky extends Entity {
 
     // Palette de lever du soleil (aube)
     private Color[] paletteAube(float heure) {
-        float t = Math.min(1f, Math.max(0f, (heure - 6f) / 2f)); // 6h à 8h
+        float t = Math.min(1f, Math.max(0f, (heure - 8f) / 2f)); // 6h à 8h
         return new Color[]{
                 hsb(0.08f, 0.8f, 0.95f * t + 0.2f * (1 - t)), // Jaune/orangé à bleu nuit
                 hsb(0.04f, 0.6f, 0.8f * t + 0.15f * (1 - t)),

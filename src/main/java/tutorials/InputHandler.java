@@ -41,7 +41,11 @@ public class InputHandler implements KeyListener {
             }
             case KeyEvent.VK_F12 -> {
                 app.getRenderer().setVFX(!app.getRenderer().getVFX());
-                info(InputHandler.class,"VFX settings toggled");
+                info(InputHandler.class, "VFX settings toggled %s", app.getRenderer().getVFX() ? "ON" : "OFF");
+            }
+            case KeyEvent.VK_H -> {
+                app.setHelpDisplay(!app.getHelpDisplay());
+                info(InputHandler.class, "Help display toggles %s", app.getHelpDisplay() ? "ON" : "OFF");
             }
         }
     }

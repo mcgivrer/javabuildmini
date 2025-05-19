@@ -1,6 +1,7 @@
-package tutorials;
+package tutorials.simulation;
 
 import tutorials.Entity;
+import tutorials.Utils;
 import tutorials.World;
 
 import java.awt.*;
@@ -30,7 +31,7 @@ public class Sun extends Entity {
 
     private float getSunBrightness(float heure) {
         // Le soleil se lève à 6h, culmine à 12h, se couche à 18h
-        if (heure < 4f || heure > 18f) return 0f;
+        if (heure < 6f || heure > 18f) return 0f;
         if (heure <= 12f) return (heure - 6f) / 6f;      // 6h -> 12h : 0 -> 1
         else return (18f - heure) / 6f;                  // 12h -> 18h : 1 -> 0
     }
@@ -47,21 +48,20 @@ public class Sun extends Entity {
         double heuresLumiere = 2 * Math.acos(-Math.tan(phi) * Math.tan(delta)) * 12 / Math.PI;
 
         // 3. Heures lever/coucher dynamiques
-        float lever = (float) (14 - heuresLumiere / 2);
-        float coucher = (float) (12 + heuresLumiere / 2);
+        float lever = (float) (16 - heuresLumiere / 2);
+        float coucher = (float) (14 + heuresLumiere / 2);
 
         // 4. Position horizontale et verticale
-        if (heure < lever || heure > coucher + 2)
-            return new Point((int) viewport.getWidth() / 2, (int) viewport.getHeight() + 100); // Soleil caché
+        if (heure < lever || heure > coucher)
+            return new Point((int)world.getWidth() / 2, (int)world.getHeight()+(height*2)); // Soleil caché
 
         float progression = (heure - lever) / (coucher - lever);
-        int x = (int) viewport.getWidth() / 2 + (int) (width * 0.3 * Math.sin(progression * Math.PI - Math.PI / 2));
-        int y = (int) ((int) viewport.getHeight() * 1.0 - viewport.getHeight() * 0.8 * Math.cos(delta) * Math.sin(progression * Math.PI));
+        int x = (int)world.getWidth() / 2 + (int) (width * 0.3 * Math.sin(progression * Math.PI - Math.PI / 2));
+        int y = (int) ((int)world.getHeight() * 1.0 - world.getHeight() * 0.8 * Math.cos(delta) * Math.sin(progression * Math.PI));
 
         return new Point(x, y);
     }
 
-    @Override
     public void update(long elapsed) {
         float heure = world.getDayTime();
         Point sunPos = getSunPosition((int) viewport.getWidth(), (int) viewport.getHeight(), heure);
@@ -74,8 +74,7 @@ public class Sun extends Entity {
         float heure = world.getDayTime();
         float brightness = getSunBrightness(heure);
         Color colorHorizon = new Color(255, 200, 80, 220); // Jaune/orangé
-        Color colorZenith = new Color(255, 255, 255, 240);
-        // Couleur de base du soleil (jaune vif)
+        Color colorZenith = new Color(255, 255, 220, 240); // Couleur de base du soleil (jaune vif)
         Color sunColor = Utils.interpolateColor(colorHorizon, colorZenith, brightness);
 
         g2.setColor(sunColor);

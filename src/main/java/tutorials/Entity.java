@@ -44,7 +44,6 @@ public class Entity extends Rectangle2D.Double {
         super(x, y, width, height);
         this.name = name;
         setType(PhysicType.DYNAMIC);
-        setShape(new Rectangle2D.Double(x, y, width, height));
     }
 
     public <T extends Entity> T add(Behavior<T> behavior) {
@@ -57,14 +56,16 @@ public class Entity extends Rectangle2D.Double {
     }
 
     public void draw(Graphics2D g) {
-        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, getAlpha()));
-        if (getFillColor() != null) {
-            g.setColor(getFillColor());
-            g.fill(getShape());
-        }
-        if (getColor() != null) {
-            g.setColor(getColor());
-            g.draw(getShape());
+        if (getShape() != null) {
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, getAlpha()));
+            if (getFillColor() != null) {
+                g.setColor(getFillColor());
+                g.fill(getShape());
+            }
+            if (getColor() != null) {
+                g.setColor(getColor());
+                g.draw(getShape());
+            }
         }
     }
 
