@@ -1,12 +1,17 @@
 package tutorials.scenes;
 
 import tutorials.*;
+import tutorials.sfx.OldTerminalVFX;
+import tutorials.simulation.Sky;
+import tutorials.simulation.StarSky;
+import tutorials.simulation.Sun;
 
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
 
 import static tutorials.InputHandler.isKeyPressed;
 
@@ -54,25 +59,26 @@ public class DemoScene extends AbstractScene implements Scene {
                 .setMass(80.0)
                 .setMaterial(Material.PLASTIC)
                 .setPriority(5)
+                .setShape(new Rectangle2D.Double())
                 .add((app, e, deltaTime) -> {
-                    double step = 10.5;
-                    if (isKeyPressed(KeyEvent.VK_UP)) {
-                        e.addVelocity(0, -step * 5);
-                    }
-                    if (isKeyPressed(KeyEvent.VK_DOWN)) {
-                        e.addVelocity(0, step);
-                    }
-                    if (isKeyPressed(KeyEvent.VK_LEFT)) {
-                        e.addVelocity(-step, 0);
-                    }
-                    if (isKeyPressed(KeyEvent.VK_RIGHT)) {
-                        e.addVelocity(step, 0);
-                    }
-                    if (isKeyPressed(KeyEvent.VK_SPACE)) {
-                        e.dy *= 0.9;
-                        e.dx *= 0.9;
-                    }
-                });
+            double step = 10.5;
+            if (isKeyPressed(KeyEvent.VK_UP)) {
+                e.addVelocity(0, -step * 5);
+            }
+            if (isKeyPressed(KeyEvent.VK_DOWN)) {
+                e.addVelocity(0, step);
+            }
+            if (isKeyPressed(KeyEvent.VK_LEFT)) {
+                e.addVelocity(-step, 0);
+            }
+            if (isKeyPressed(KeyEvent.VK_RIGHT)) {
+                e.addVelocity(step, 0);
+            }
+            if (isKeyPressed(KeyEvent.VK_SPACE)) {
+                e.dy *= 0.9;
+                e.dx *= 0.9;
+            }
+        });
         add(player);
 
         generateEntity("enemy_%d", 100, Color.RED, Color.RED.darker());

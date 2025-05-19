@@ -1,4 +1,8 @@
-package tutorials;
+package tutorials.simulation;
+
+import tutorials.Entity;
+import tutorials.Utils;
+import tutorials.World;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;

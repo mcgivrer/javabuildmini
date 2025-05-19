@@ -1,6 +1,7 @@
-package tutorials;
+package tutorials.simulation;
 
 import tutorials.Entity;
+import tutorials.Utils;
 import tutorials.World;
 
 import java.awt.*;

@@ -1,4 +1,7 @@
-package tutorials;
+package tutorials.simulation;
+
+import tutorials.Entity;
+import tutorials.World;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -41,10 +44,12 @@ public class StarSky extends Entity {
         }
     }
 
-    public void update(double deltaTime) {
+    @Override
+    public void update(long deltaTime) {
 
     }
 
+    @Override
     public void draw(Graphics2D g2) {
         float heure = world.getDayTime();
         // t va de 0 (pas d’étoiles) à 1 (ciel entièrement étoilé)
@@ -64,7 +69,7 @@ public class StarSky extends Entity {
         for (int i = 0; i < starsToDraw; i++) {
             Star e = stars.get(i);
             // vitesse de rotation, ajustable (ici, 0.02 tours/sec)
-            double angle = e.angle0 + 0.02 * 2 * Math.PI * temps;
+            double angle = e.angle + 0.02 * 2 * Math.PI * temps;
             int x = (int) (cx + e.rayon * Math.cos(angle));
             int y = (int) (cy + e.rayon * Math.sin(angle));
             g2.setColor(e.couleur);

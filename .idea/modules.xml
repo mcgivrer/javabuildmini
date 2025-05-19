@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Java Build Mini.iml" filepath="$PROJECT_DIR$/Java Build Mini.iml" />
+      <module fileurl="file://$PROJECT_DIR$/JavaBuildMini.iml" filepath="$PROJECT_DIR$/JavaBuildMini.iml" />
     </modules>
   </component>
 </project>

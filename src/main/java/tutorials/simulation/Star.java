@@ -1,16 +1,16 @@
-package tutorials;
+package tutorials.simulation;
 
 import java.awt.*;
 
 public class Star {
     double rayon;
-    double angle0; // angle initial en radians
+    double angle; // angle initial en radians
     int taille;
     Color couleur;
 
-    public Star(double rayon, double angle0, int taille, Color couleur) {
+    public Star(double rayon, double angle, int taille, Color couleur) {
         this.rayon = rayon;
-        this.angle0 = angle0;
+        this.angle = angle;
         this.taille = taille;
         this.couleur = couleur;
     }

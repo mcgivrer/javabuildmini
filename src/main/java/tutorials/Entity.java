@@ -44,18 +44,29 @@ public class Entity extends Rectangle2D.Double {
         super(x, y, width, height);
         this.name = name;
         setType(PhysicType.DYNAMIC);
-        setShape(new Rectangle2D.Double(x, y, width, height));
     }
-
 
     public <T extends Entity> T add(Behavior<T> behavior) {
         behaviors.add(behavior);
         return (T) this;
     }
 
-
     public void update(long elapsed) {
         // nothing by default.
+    }
+
+    public void draw(Graphics2D g) {
+        if (getShape() != null) {
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, getAlpha()));
+            if (getFillColor() != null) {
+                g.setColor(getFillColor());
+                g.fill(getShape());
+            }
+            if (getColor() != null) {
+                g.setColor(getColor());
+                g.draw(getShape());
+            }
+        }
     }
 
     public <T extends Entity> T setPosition(double x, double y) {
@@ -213,8 +224,4 @@ public class Entity extends Rectangle2D.Double {
                 '}';
     }
 
-
-    public void draw(Graphics2D g) {
-
-    }
 }

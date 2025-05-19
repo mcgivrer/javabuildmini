@@ -1,5 +1,7 @@
 package tutorials;
 
+import tutorials.sfx.VFXDraw;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
@@ -49,7 +51,7 @@ public class Renderer {
                                 -scene.getActiveCamera().getPosition().getX(),
                                 -scene.getActiveCamera().getPosition().getY());
                     }
-                    drawEntity(g, e);
+                    e.draw(g);
                     if (!e.isStickToViewport() && Optional.ofNullable(scene.getActiveCamera()).isPresent()) {
                         Camera cam = scene.getActiveCamera();
                         g.draw(cam.getViewport());
@@ -59,50 +61,7 @@ public class Renderer {
                     }
                 });
     }
-
-    private void drawEntity(Graphics2D g, Entity e) {
-        if (e instanceof TextEntity te) {
-            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, te.getAlpha()));
-            drawText(g, te.getText(),
-                    (int) te.getX() + 2, (int) te.getY() + 2,
-                    te.getShadowColor(),
-                    te.getFont(),
-                    te.getTextAlign());
-            drawText(g, te.getText(),
-                    (int) te.getX(), (int) te.getY(),
-                    te.getTextColor(),
-                    te.getFont(),
-                    te.getTextAlign());
-            te.setSize(g.getFontMetrics().stringWidth(te.getText()), g.getFontMetrics().getHeight());
-        } else if ("World Sun Sky StarSky".contains(e.getClass().getSimpleName())) {
-            e.draw(g);
-        } else {
-            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, e.getAlpha()));
-            if (e.getFillColor() != null) {
-                g.setColor(e.getFillColor());
-                g.fill(e.getShape());
-            }
-            if (e.getColor() != null) {
-                g.setColor(e.getColor());
-                g.draw(e.getShape());
-            }
-        }
-    }
-
-
-    private static void drawText(Graphics2D g, String message, int x, int y, Color c, Font f, TextAlign ta) {
-        if (c != null) g.setColor(c);
-        if (f != null) g.setFont(f);
-        if (ta != null) {
-            switch (ta) {
-                case LEFT -> x = x;
-                case RIGHT -> x = x - g.getFontMetrics().stringWidth(message);
-                case CENTER -> x = x - g.getFontMetrics().stringWidth(message) / 2;
-            }
-        }
-        g.drawString(message, x, y);
-    }
-
+    
     public void addVFX(VFXDraw vfx) {
         if (!this.postProcessingVFXs.contains(vfx)) {
             this.postProcessingVFXs.add(vfx);
