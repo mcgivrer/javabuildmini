@@ -22,7 +22,7 @@ public class CloudyWeatherEffect extends Entity implements WeatherEffect {
     private void init() {
         double x = rand.nextInt((int) world.getWidth());
         double y = rand.nextInt((int) world.getHeight() / 2); // nuages en haut du ciel
-        double taille = 60 + rand.nextInt(80);
+        double taille = 20 + rand.nextInt(40);
         float opacite = 0.5f + rand.nextFloat() * 0.4f;
         clouds.add(new Cloud(x, y, taille, opacite));
     }

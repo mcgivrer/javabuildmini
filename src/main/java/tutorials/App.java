@@ -32,6 +32,7 @@ public class App extends JPanel {
         info(App.class, "Start the application %s", messages.getString("app.title"));
     }
 
+
     public void run(String[] args) {
         info(App.class, "Running...");
         init(args);
@@ -234,5 +235,9 @@ public class App extends JPanel {
 
     public boolean getHelpDisplay() {
         return helpDisplay;
+    }
+
+    public InputHandler getInputHandler() {
+        return inputHandler;
     }
 }

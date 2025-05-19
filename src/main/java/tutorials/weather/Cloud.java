@@ -34,8 +34,8 @@ class Cloud extends Entity {
         x += vx * elapsed;
         y += vy * elapsed;
         for (ParticleCloud p : particules) {
-            p.x += vx;
-            p.y += vy;
+            p.x += vx* elapsed;
+            p.y += vy* elapsed;
         }
         // Optionnel : dissipation progressive
         opacite = Math.max(0, opacite - 0.0002f);

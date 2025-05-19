@@ -1,12 +1,10 @@
 package tutorials.weather;
 
 import tutorials.Entity;
-import tutorials.InputHandler;
 import tutorials.Season;
 import tutorials.World;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -50,21 +48,16 @@ public class WeatherEffects extends Entity {
 
     @Override
     public void update(long elapsed) {
-        for (WeatherEffect effet : effets) effet.update(elapsed);
+        for (Entity effet : effets) effet.update(elapsed);
         effets.removeIf(e -> !e.isActive());
-        if (InputHandler.isKeyPressed(KeyEvent.VK_1)) {
-            effets.add(new CloudyWeatherEffect("clouds", world));
-        }
-        if (InputHandler.isKeyPressed(KeyEvent.VK_2)) {
-            effets.add(new RainWeatherEffect(world, 80));
-        }
-        if (InputHandler.isKeyPressed(KeyEvent.VK_3)) {
-            effets.add(new SnowWeatherEffect(world, 80));
-        }
     }
 
     @Override
     public void draw(Graphics2D g) {
-        for (WeatherEffect effet : effets) effet.draw(g);
+        for (Entity effet : effets) effet.draw(g);
+    }
+
+    public List<Entity> getEffects() {
+        return effets;
     }
 }

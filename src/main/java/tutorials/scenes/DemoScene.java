@@ -1,6 +1,9 @@
 package tutorials.scenes;
 
 import tutorials.*;
+import tutorials.weather.CloudyWeatherEffect;
+import tutorials.weather.RainWeatherEffect;
+import tutorials.weather.SnowWeatherEffect;
 import tutorials.weather.WeatherEffects;
 import tutorials.sfx.OldTerminalVFX;
 import tutorials.simulation.Sky;
@@ -27,10 +30,14 @@ public class DemoScene extends AbstractScene implements Scene {
         Log.info(this.getClass(), "Initializing...");
         app.getRenderer().addVFX(new OldTerminalVFX(0.3f, 2.0f));
 
+        app.getInputHandler().register(this);
+
+
         JFrame window = app.getWindow();
+        Dimension ws = app.config.getConfigValue("app.physic.world.size", "720x460");
 
         world.setFillColor(new Color(0.0f, 0.4f, 0.8f))
-                .setSize(window.getWidth(), window.getHeight())
+                .setSize(ws.getWidth(), ws.getHeight())
                 .add((Behavior<World>) (app, w, deltaTime) -> {
                     if (isKeyPressed(KeyEvent.VK_PAGE_UP)) {
                         w.setDayTime(w.getDayTime() + 0.05f % 24);
@@ -95,7 +102,7 @@ public class DemoScene extends AbstractScene implements Scene {
                 .setValue(0)
                 .setTextColor(Color.WHITE)
                 .setShadowColor(Color.BLACK)
-                .setFont(app.getWindow().getGraphics().getFont().deriveFont(26.0f))
+                .setFont(app.getWindow().getGraphics().getFont().deriveFont(Font.BOLD, 26.0f))
                 .setPosition(40, 56)
                 .setStickToViewport(true));
 
@@ -104,7 +111,7 @@ public class DemoScene extends AbstractScene implements Scene {
                 .setValue(3)
                 .setTextColor(Color.WHITE)
                 .setShadowColor(Color.BLACK)
-                .setFont(app.getWindow().getGraphics().getFont().deriveFont(26.0f))
+                .setFont(app.getWindow().getGraphics().getFont().deriveFont(Font.BOLD, 26.0f))
                 .setPosition(app.getWindow().getWidth() - 50, 56)
                 .setStickToViewport(true));
 
@@ -112,7 +119,7 @@ public class DemoScene extends AbstractScene implements Scene {
                 .setText("00:00")
                 .setTextColor(Color.WHITE)
                 .setShadowColor(Color.BLACK)
-                .setFont(app.getWindow().getGraphics().getFont().deriveFont(18.0f))
+                .setFont(app.getWindow().getGraphics().getFont().deriveFont(Font.BOLD, 18.0f))
                 .setTextAlign(TextAlign.CENTER)
                 .setPosition(app.getWindow().getWidth() * 0.5, 56)
                 .setStickToViewport(true)
@@ -159,5 +166,22 @@ public class DemoScene extends AbstractScene implements Scene {
 
             add(enemy);
         }
+    }
+
+    public void onKeyPressed(int keyCode){
+        WeatherEffects we = (WeatherEffects) getEntity("weather");
+        if (keyCode==KeyEvent.VK_1) {
+            we.getEffects().add(new CloudyWeatherEffect("clouds", world));
+        }
+        if (keyCode==KeyEvent.VK_2) {
+            we.getEffects().add(new RainWeatherEffect("rain", world, 80));
+        }
+        if (keyCode==KeyEvent.VK_3) {
+            we.getEffects().add(new SnowWeatherEffect("snow", world, 80));
+        }
+        if (keyCode==KeyEvent.VK_0) {
+            we.getEffects().clear();
+        }
+
     }
 }

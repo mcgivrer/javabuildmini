@@ -65,6 +65,9 @@ public class Configuration {
             case "app.debug.level", "debug", "dl" -> {
                 return (T) Integer.valueOf(config.getProperty(key, defaultValue));
             }
+            case "app.physic.world.size" -> {
+                return (T) getDimensionFromString(config.getProperty(key), defaultValue);
+            }
             default -> {
                 error(Configuration.class, "Unknown configuration key %s", key);
                 return null;

@@ -1,5 +1,7 @@
 package tutorials;
 
+import tutorials.io.OnKeyEvent;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +9,7 @@ import java.util.Optional;
 
 import static tutorials.Log.debug;
 
-public abstract class AbstractScene implements Scene {
+public abstract class AbstractScene implements Scene, OnKeyEvent {
 
 
     private static List<Scene> scenes = new ArrayList<>();

@@ -1,20 +1,29 @@
 package tutorials;
 
+import tutorials.io.OnKeyEvent;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 import static tutorials.Log.*;
 
 public class InputHandler implements KeyListener {
 
+    private List<OnKeyEvent> keyEvents = new ArrayList<>();
     private static boolean[] keys = new boolean[1024];
     private final App app;
 
 
     public InputHandler(App app) {
         this.app = app;
+    }
+
+    public void register(OnKeyEvent oke) {
+        keyEvents.add(oke);
     }
 
     @Override
@@ -30,6 +39,9 @@ public class InputHandler implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
         keys[e.getKeyCode()] = false;
+        for (OnKeyEvent oke : keyEvents) {
+            oke.onKeyPressed(e.getKeyCode());
+        }
         switch (e.getKeyCode()) {
             case KeyEvent.VK_ESCAPE -> {
                 info(App.class, "Exiting...");
