@@ -7,12 +7,12 @@ import java.util.List;
 
 public class Renderer {
 
-    private final App app;
+    private final JFrame window;
     private List<VFXDraw> postProcessingVFXs = new ArrayList<>();
     private boolean vfxActive = true;
 
-    Renderer(App app) {
-        this.app = app;
+    Renderer(JFrame window) {
+        this.window = window;
     }
 
     public void draw(Graphics2D g, Scene scene) {
@@ -20,28 +20,11 @@ public class Renderer {
                 RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY,
                 RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON
         ));
-        JFrame window = app.getWindow();
         // clear drawing.
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, window.getWidth(), window.getHeight());
-        // move camera.
-        if (Optional.ofNullable(scene.getActiveCamera()).isPresent()) {
-            g.translate(
-                    -scene.getActiveCamera().getPosition().getX(),
-                    -scene.getActiveCamera().getPosition().getY());
-        }
         // draw entities in scene
-        drawEntities(g, scene, false);
-        // move back camera
-        if (Optional.ofNullable(scene.getActiveCamera()).isPresent()) {
-            Camera cam = scene.getActiveCamera();
-            g.draw(cam.getViewport());
-            g.translate(
-                    cam.getPosition().getX(),
-                    cam.getPosition().getY());
-        }
-        // draw camera fixed entities
-        drawEntities(g, scene, true);
+        drawEntities(g, scene);
         // draw postprocessed visual effects.
         if (vfxActive) {
             postProcessing(g);
@@ -50,48 +33,59 @@ public class Renderer {
 
     private void postProcessing(Graphics2D g) {
         for (VFXDraw vfx : postProcessingVFXs) {
-            vfx.update(g, app.getWindow());
+            vfx.update(g, window);
         }
 
     }
 
-    private void drawEntities(Graphics2D g, Scene scene, boolean stickToViewport) {
+    private void drawEntities(Graphics2D g, Scene scene) {
         scene.getEntities().stream()
                 .filter(Entity::isActive)
-                .filter(e -> e.isStickToViewport() == stickToViewport)
                 .filter(entity -> !(entity instanceof Camera))
                 .sorted(Comparator.comparingInt(Entity::getPriority))
                 .forEach(e -> {
-                    if (e instanceof TextEntity te) {
-                        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, te.getAlpha()));
-                        drawText(g, te.getText(),
-                                (int) te.getX() + 2, (int) te.getY() + 2,
-                                te.getShadowColor(),
-                                te.getFont(),
-                                te.getTextAlign());
-                        drawText(g, te.getText(),
-                                (int) te.getX(), (int) te.getY(),
-                                te.getTextColor(),
-                                te.getFont(),
-                                te.getTextAlign());
-                        te.setSize(app.getGraphics().getFontMetrics().stringWidth(te.getText()), app.getGraphics().getFontMetrics().getHeight());
-                    } else if ("World Sun Sky StarSky".contains(e.getClass().getSimpleName())) {
-                        e.draw(g);
-                    } else {
-                        drawEntity(g, e);
+                    if (!e.isStickToViewport() && Optional.ofNullable(scene.getActiveCamera()).isPresent()) {
+                        g.translate(
+                                -scene.getActiveCamera().getPosition().getX(),
+                                -scene.getActiveCamera().getPosition().getY());
+                    }
+                    drawEntity(g, e);
+                    if (!e.isStickToViewport() && Optional.ofNullable(scene.getActiveCamera()).isPresent()) {
+                        Camera cam = scene.getActiveCamera();
+                        g.draw(cam.getViewport());
+                        g.translate(
+                                cam.getPosition().getX(),
+                                cam.getPosition().getY());
                     }
                 });
     }
 
     private void drawEntity(Graphics2D g, Entity e) {
-        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, e.getAlpha()));
-        if (e.getFillColor() != null) {
-            g.setColor(e.getFillColor());
-            g.fill(e.getShape());
-        }
-        if (e.getColor() != null) {
-            g.setColor(e.getColor());
-            g.draw(e.getShape());
+        if (e instanceof TextEntity te) {
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, te.getAlpha()));
+            drawText(g, te.getText(),
+                    (int) te.getX() + 2, (int) te.getY() + 2,
+                    te.getShadowColor(),
+                    te.getFont(),
+                    te.getTextAlign());
+            drawText(g, te.getText(),
+                    (int) te.getX(), (int) te.getY(),
+                    te.getTextColor(),
+                    te.getFont(),
+                    te.getTextAlign());
+            te.setSize(g.getFontMetrics().stringWidth(te.getText()), g.getFontMetrics().getHeight());
+        } else if ("World Sun Sky StarSky".contains(e.getClass().getSimpleName())) {
+            e.draw(g);
+        } else {
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, e.getAlpha()));
+            if (e.getFillColor() != null) {
+                g.setColor(e.getFillColor());
+                g.fill(e.getShape());
+            }
+            if (e.getColor() != null) {
+                g.setColor(e.getColor());
+                g.draw(e.getShape());
+            }
         }
     }
 

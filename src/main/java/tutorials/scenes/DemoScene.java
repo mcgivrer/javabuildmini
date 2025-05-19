@@ -18,7 +18,7 @@ public class DemoScene extends AbstractScene implements Scene {
     @Override
     public void init() {
         Log.info(this.getClass(), "Initializing...");
-        app.getRenderer().addVFX(new OldTerminalVFX(0.3f));
+        app.getRenderer().addVFX(new OldTerminalVFX(0.3f, 2.0f));
 
         JFrame window = app.getWindow();
 
@@ -33,9 +33,18 @@ public class DemoScene extends AbstractScene implements Scene {
                     }
                 });
 
-        add(new Sky("sky").setWorld(world).setPriority(-9));
-        add(new StarSky("stars", world, 100).setPriority(-8));
-        add(new Sun("sun").setWorld(world).setPriority(-7));
+        add(new Sky("sky")
+                .setWorld(world)
+                .setViewport(app.getWindow().getBounds())
+                .setPriority(-9));
+        add(new StarSky("stars", 1000)
+                .setWorld(world)
+                .setViewport(app.getWindow().getBounds())
+                .setPriority(-8));
+        add(new Sun("sun")
+                .setWorld(world)
+                .setViewport(app.getWindow().getBounds())
+                .setPriority(-7));
 
         Entity player = new Entity("player",
                 (window.getWidth() - 16) * 0.5,
@@ -91,7 +100,8 @@ public class DemoScene extends AbstractScene implements Scene {
                 .setText("00:00")
                 .setTextColor(Color.WHITE)
                 .setShadowColor(Color.BLACK)
-                .setFont(app.getWindow().getGraphics().getFont().deriveFont(14.0f))
+                .setFont(app.getWindow().getGraphics().getFont().deriveFont(18.0f))
+                .setTextAlign(TextAlign.CENTER)
                 .setPosition(app.getWindow().getWidth() * 0.5, 56)
                 .setStickToViewport(true)
                 .add((Behavior<TextEntity>) (app, e, deltaTime) -> {

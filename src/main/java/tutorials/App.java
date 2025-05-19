@@ -41,11 +41,13 @@ public class App extends JPanel {
         info(App.class, "Initializing...");
         config.processConfiguration(args);
         debug = config.getConfigValue("app.debug.level", "0");
+        inputHandler = new InputHandler(this);
 
         AbstractScene.loadScenes(this, config);
-        renderer = new Renderer(this);
-        inputHandler = new InputHandler(this);
+
         createWindow(messages.getString("app.window.title"), config.getConfigValue("app.window.size", "760x420"));
+        renderer = new Renderer(window);
+
         createScene();
     }
 

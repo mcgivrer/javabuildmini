@@ -8,6 +8,7 @@ public class World extends Entity {
     private Point2D gravity;
     private double friction = 0.99;
     private float dayTime = 0;
+    private float day = 1;
 
     public World(String name, double width, double height) {
         super(name, 0, 0, width, height);
@@ -38,7 +39,10 @@ public class World extends Entity {
 
 
     public void update(long elapsed) {
-        dayTime = (dayTime + (float) elapsed * 0.00167f) % 24;
+        dayTime = (dayTime + (float) elapsed * 0.000167f) % 24;
+        if (dayTime > 23.98f && dayTime < 24.00) {
+            dayTime += 1.0f;
+        }
     }
 
     public World setDayTime(float dayTime) {
@@ -46,7 +50,17 @@ public class World extends Entity {
         return this;
     }
 
+    public World setDay(float day) {
+        this.day = day;
+        return this;
+    }
+
     public float getDayTime() {
         return dayTime;
     }
+
+    public float getDay() {
+        return day;
+    }
+
 }
