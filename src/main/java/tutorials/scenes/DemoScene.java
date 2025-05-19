@@ -1,12 +1,14 @@
 package tutorials.scenes;
 
 import tutorials.*;
+import tutorials.weather.WeatherEffects;
 
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Ellipse2D;
+import java.time.LocalDate;
 
 import static tutorials.InputHandler.isKeyPressed;
 
@@ -37,14 +39,19 @@ public class DemoScene extends AbstractScene implements Scene {
                 .setWorld(world)
                 .setViewport(app.getWindow().getBounds())
                 .setPriority(-9));
+
         add(new StarSky("stars", 1000)
                 .setWorld(world)
                 .setViewport(app.getWindow().getBounds())
                 .setPriority(-8));
+
         add(new Sun("sun")
                 .setWorld(world)
                 .setViewport(app.getWindow().getBounds())
                 .setPriority(-7));
+
+        add(new WeatherEffects("weather", Season.getSeason(LocalDate.now()), world)
+                .setPriority(-6));
 
         Entity player = new Entity("player",
                 (window.getWidth() - 16) * 0.5,
@@ -73,6 +80,7 @@ public class DemoScene extends AbstractScene implements Scene {
                         e.dx *= 0.9;
                     }
                 });
+
         add(player);
 
         generateEntity("enemy_%d", 100, Color.RED, Color.RED.darker());
@@ -85,7 +93,6 @@ public class DemoScene extends AbstractScene implements Scene {
                 .setFont(app.getWindow().getGraphics().getFont().deriveFont(26.0f))
                 .setPosition(40, 56)
                 .setStickToViewport(true));
-
 
         add(new TextEntity("life")
                 .setText("%01d")

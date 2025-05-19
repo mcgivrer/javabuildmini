@@ -1,5 +1,7 @@
 package tutorials;
 
+import tutorials.weather.WeatherEffects;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -22,6 +24,7 @@ public class App extends JPanel {
     private static Dimension windowSize = new Dimension(640, 400);
     private Renderer renderer;
     private InputHandler inputHandler;
+    private WeatherEffects weatherManager;
 
     public App() {
         super();
@@ -96,6 +99,7 @@ public class App extends JPanel {
     private void process() {
         info(App.class, "Processing...");
         long startTime = 0, endTime = 0, elapsed = 0;
+
         do {
             startTime = endTime;
             update(elapsed > (1000 / FPS) ? 1 : (1000 / FPS) - elapsed);
@@ -110,6 +114,7 @@ public class App extends JPanel {
                 }
             }
         } while (!exit);
+
         info(App.class, "End of Processing.");
     }
 

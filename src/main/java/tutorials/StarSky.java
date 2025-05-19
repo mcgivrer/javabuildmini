@@ -41,10 +41,7 @@ public class StarSky extends Entity {
         }
     }
 
-    public void update(double deltaTime) {
-
-    }
-
+    @Override
     public void draw(Graphics2D g2) {
         float heure = world.getDayTime();
         // t va de 0 (pas d’étoiles) à 1 (ciel entièrement étoilé)

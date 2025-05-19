@@ -2,6 +2,7 @@ package tutorials;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 
 public class World extends Entity {
@@ -9,6 +10,7 @@ public class World extends Entity {
     private double friction = 0.99;
     private float dayTime = 0;
     private float day = 1;
+    private Season season;
 
     public World(String name, double width, double height) {
         super(name, 0, 0, width, height);
@@ -17,6 +19,8 @@ public class World extends Entity {
         setFillColor(null);
         setType(PhysicType.STATIC);
         setDayTime(ZonedDateTime.now().getHour());
+        // generate Season.
+        setSeason(Season.getSeason(LocalDate.now()));
     }
 
     public World() {
@@ -63,4 +67,13 @@ public class World extends Entity {
         return day;
     }
 
+
+    public World setSeason(Season season) {
+        this.season = season;
+        return this;
+    }
+
+    public Season getSeason() {
+        return season;
+    }
 }

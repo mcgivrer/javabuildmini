@@ -21,6 +21,7 @@ public class Sky extends Entity {
         return this;
     }
 
+    @Override
     public void draw(Graphics2D g) {
         int w = (int) viewport.getWidth();
         int h = (int) viewport.getHeight();

@@ -69,6 +69,7 @@ public class Sun extends Entity {
         this.y = sunPos.y - height * 0.5;
     }
 
+    @Override
     public void draw(Graphics2D g2) {
         float heure = world.getDayTime();
         float brightness = getSunBrightness(heure);
