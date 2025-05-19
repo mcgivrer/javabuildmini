@@ -22,6 +22,7 @@ public class App extends JPanel {
     private static Dimension windowSize = new Dimension(640, 400);
     private Renderer renderer;
     private InputHandler inputHandler;
+    private boolean helpDisplay = false;
 
     public App() {
         super();
@@ -46,7 +47,7 @@ public class App extends JPanel {
         AbstractScene.loadScenes(this, config);
 
         createWindow(messages.getString("app.window.title"), config.getConfigValue("app.window.size", "760x420"));
-        renderer = new Renderer(window);
+        renderer = new Renderer(this, window);
 
         createScene();
     }
@@ -220,5 +221,13 @@ public class App extends JPanel {
 
     public Renderer getRenderer() {
         return renderer;
+    }
+
+    public void setHelpDisplay(boolean b) {
+        this.helpDisplay = b;
+    }
+
+    public boolean getHelpDisplay() {
+        return helpDisplay;
     }
 }
