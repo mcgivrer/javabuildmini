@@ -22,7 +22,15 @@ JARS=
 #--- DO NOT CHANGE THE FOLLOWING LINES ---
 #
 echo "build project ' ${project_name}' version ${project_version}..."
-for arg
+# Check if no arguments were passed
+if [ $# -eq 0 ]; then
+    echo "No options provided. Defaulting to 'c b m j'."
+    args=("c" "b" "m" "j")
+else
+    args=("$@")
+fi
+
+for arg in "${args[@]}"
 do
 	echo "execute command $arg:";
   case $arg in 
