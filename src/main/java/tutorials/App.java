@@ -51,7 +51,8 @@ public class App extends JPanel {
         AbstractScene.loadScenes(this, config);
 
         createWindow(messages.getString("app.window.title"), config.getConfigValue("app.window.size", "760x420"));
-        renderer = new Renderer(this, window);
+        Dimension bufferResolution=config.getConfigValue("app.window.buffer.resolution", "640x400");
+        renderer = new Renderer(this, window, bufferResolution);
 
         createScene();
     }

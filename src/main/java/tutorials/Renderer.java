@@ -17,10 +17,13 @@ public class Renderer {
 
     private BufferedImage buffer;
 
-    Renderer(App app, JFrame window) {
+    Renderer(App app, JFrame window, Dimension bufferResolution) {
         this.app = app;
         this.window = window;
-        this.buffer = new BufferedImage(320, 200, BufferedImage.TYPE_INT_RGB);
+        this.buffer = new BufferedImage(
+                (int)bufferResolution.getWidth(),
+                (int)bufferResolution.getHeight(),
+                BufferedImage.TYPE_INT_RGB);
     }
 
     public void draw(Graphics2D g2, Scene scene) {
