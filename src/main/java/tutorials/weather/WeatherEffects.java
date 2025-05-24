@@ -1,27 +1,31 @@
 package tutorials.weather;
 
 import tutorials.Entity;
+import tutorials.PhysicType;
 import tutorials.Season;
 import tutorials.World;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class WeatherEffects extends Entity {
 
-    private final World world;
+    private final BufferedImage world;
     private List<Entity> effets = new ArrayList<>();
     private Season season;
     private Random rand = new Random();
 
-    public WeatherEffects(String name, Season saison, World world) {
+    public WeatherEffects(String name, Season saison, BufferedImage bufferedImage) {
         super(name);
         this.season = saison;
-        this.world = world;
+        this.world = bufferedImage;
         generateRandomWeatherEffect();
         setPriority(-9);
+        setType(PhysicType.STATIC);
+        setStickToViewport(true);
     }
 
     public void generateRandomWeatherEffect() {

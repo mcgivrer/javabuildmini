@@ -49,20 +49,20 @@ public class DemoScene extends AbstractScene implements Scene {
 
         add(new Sky("sky")
                 .setWorld(world)
-                .setViewport(app.getWindow().getBounds())
+                .setViewport(app.getRenderer().getRenderingBuffer().getRaster().getBounds())
                 .setPriority(-9));
 
         add(new StarSky("stars", 1000)
                 .setWorld(world)
-                .setViewport(app.getWindow().getBounds())
+                .setViewport(app.getRenderer().getRenderingBuffer().getRaster().getBounds())
                 .setPriority(-8));
 
         add(new Sun("sun")
                 .setWorld(world)
-                .setViewport(app.getWindow().getBounds())
+                .setViewport(app.getRenderer().getRenderingBuffer().getRaster().getBounds())
                 .setPriority(-7));
 
-        add(new WeatherEffects("weather", Season.getSeason(LocalDate.now()), world)
+        add(new WeatherEffects("weather", Season.getSeason(LocalDate.now()), app.getRenderer().getRenderingBuffer())
                 .setPriority(-6));
 
         Entity player = new Entity("player",
@@ -102,8 +102,8 @@ public class DemoScene extends AbstractScene implements Scene {
                 .setValue(0)
                 .setTextColor(Color.WHITE)
                 .setShadowColor(Color.BLACK)
-                .setFont(app.getWindow().getGraphics().getFont().deriveFont(Font.BOLD, 26.0f))
-                .setPosition(40, 56)
+                .setFont(app.getRenderer().getRenderingBuffer().getGraphics().getFont().deriveFont(Font.BOLD, 16.0f))
+                .setPosition(20, 36)
                 .setStickToViewport(true));
 
         add(new TextEntity("life")
@@ -111,17 +111,17 @@ public class DemoScene extends AbstractScene implements Scene {
                 .setValue(3)
                 .setTextColor(Color.WHITE)
                 .setShadowColor(Color.BLACK)
-                .setFont(app.getWindow().getGraphics().getFont().deriveFont(Font.BOLD, 26.0f))
-                .setPosition(app.getWindow().getWidth() - 50, 56)
+                .setFont(app.getRenderer().getRenderingBuffer().getGraphics().getFont().deriveFont(Font.BOLD, 16.0f))
+                .setPosition(app.getRenderer().getRenderingBuffer().getWidth() - 50, 36)
                 .setStickToViewport(true));
 
         add(new TextEntity("time")
                 .setText("00:00")
                 .setTextColor(Color.WHITE)
                 .setShadowColor(Color.BLACK)
-                .setFont(app.getWindow().getGraphics().getFont().deriveFont(Font.BOLD, 18.0f))
+                .setFont(app.getRenderer().getRenderingBuffer().getGraphics().getFont().deriveFont(Font.BOLD, 12.0f))
                 .setTextAlign(TextAlign.CENTER)
-                .setPosition(app.getWindow().getWidth() * 0.5, 56)
+                .setPosition(app.getRenderer().getRenderingBuffer().getWidth() * 0.5, 36)
                 .setStickToViewport(true)
                 .add((Behavior<TextEntity>) (app, e, deltaTime) -> {
                     int hour = (int) (world.getDayTime() % 24);
@@ -131,8 +131,10 @@ public class DemoScene extends AbstractScene implements Scene {
 
         // define the new active camera for the scene.
         add(new Camera("cam01")
-                .setOffset(40, 40)
-                .setViewport(app.getWindow().getWidth(), app.getWindow().getHeight())
+                .setOffset(20, 20)
+                .setViewport(
+                        app.getRenderer().getRenderingBuffer().getWidth(),
+                        app.getRenderer().getRenderingBuffer().getHeight())
                 .setTarget(player)
                 .setTweenFactor(0.002));
 
@@ -141,8 +143,9 @@ public class DemoScene extends AbstractScene implements Scene {
     }
 
     public void resize(JFrame window) {
-        getEntity("score").setPosition(40, 56);
-        getEntity("life").setPosition(app.getWindow().getWidth() - 50, 56);
+        getEntity("score").setPosition(40, 36);
+        getEntity("time").setPosition(app.getRenderer().getRenderingBuffer().getWidth() * 0.5, 36);
+        getEntity("life").setPosition(app.getRenderer().getRenderingBuffer().getWidth() - 30, 36);
     }
 
     private Entity getEntity(String name) {
@@ -168,18 +171,18 @@ public class DemoScene extends AbstractScene implements Scene {
         }
     }
 
-    public void onKeyPressed(int keyCode){
+    public void onKeyPressed(int keyCode) {
         WeatherEffects we = (WeatherEffects) getEntity("weather");
-        if (keyCode==KeyEvent.VK_1) {
-            we.getEffects().add(new CloudyWeatherEffect("clouds", world));
+        if (keyCode == KeyEvent.VK_1) {
+            we.getEffects().add(new CloudyWeatherEffect("clouds", app.getRenderer().getRenderingBuffer()));
         }
-        if (keyCode==KeyEvent.VK_2) {
-            we.getEffects().add(new RainWeatherEffect("rain", world, 80));
+        if (keyCode == KeyEvent.VK_2) {
+            we.getEffects().add(new RainWeatherEffect("rain", app.getRenderer().getRenderingBuffer(), 80));
         }
-        if (keyCode==KeyEvent.VK_3) {
-            we.getEffects().add(new SnowWeatherEffect("snow", world, 80));
+        if (keyCode == KeyEvent.VK_3) {
+            we.getEffects().add(new SnowWeatherEffect("snow", app.getRenderer().getRenderingBuffer(), 80));
         }
-        if (keyCode==KeyEvent.VK_0) {
+        if (keyCode == KeyEvent.VK_0) {
             we.getEffects().clear();
         }
 

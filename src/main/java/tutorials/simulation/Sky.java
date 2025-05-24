@@ -13,6 +13,7 @@ public class Sky extends Entity {
 
     public Sky(String name) {
         super(name);
+        setStickToViewport(true);
     }
 
     public Sky setWorld(World w) {

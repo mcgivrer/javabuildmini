@@ -19,6 +19,8 @@ public class StarSky extends Entity {
     public StarSky(String name, int nbStars) {
         super(name);
         this.nbStars = nbStars;
+        setStickToViewport(true);
+
     }
 
     public StarSky setWorld(World w) {
@@ -34,7 +36,7 @@ public class StarSky extends Entity {
 
     private void initStars(int nbMaxStars) {
         Random rand = new Random(1234);
-        int rayonMax = (int) (viewport.getWidth() ); // rayon maximal autour du zénith
+        int rayonMax = (int) (viewport.getWidth()); // rayon maximal autour du zénith
         for (int i = 0; i < nbMaxStars; i++) {
             double rayon = 30 + rand.nextDouble() * (rayonMax - 30);
             double angle = rand.nextDouble() * 2 * Math.PI;

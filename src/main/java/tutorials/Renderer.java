@@ -4,6 +4,7 @@ import tutorials.sfx.VFXDraw;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.List;
 
@@ -14,12 +15,16 @@ public class Renderer {
     private List<VFXDraw> postProcessingVFXs = new ArrayList<>();
     private boolean vfxActive = true;
 
+    private BufferedImage buffer;
+
     Renderer(App app, JFrame window) {
         this.app = app;
         this.window = window;
+        this.buffer = new BufferedImage(320, 200, BufferedImage.TYPE_INT_RGB);
     }
 
-    public void draw(Graphics2D g, Scene scene) {
+    public void draw(Graphics2D g2, Scene scene) {
+        Graphics2D g = (Graphics2D) buffer.getGraphics();
         g.setRenderingHints(Map.of(
                 RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON,
                 RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY,
@@ -28,7 +33,7 @@ public class Renderer {
 
         // clear drawing.
         g.setColor(Color.BLACK);
-        g.fillRect(0, 0, window.getWidth(), window.getHeight());
+        g.fillRect(0, 0, buffer.getWidth(), buffer.getHeight());
 
         // draw entities in scene
         drawEntities(g, scene);
@@ -37,6 +42,14 @@ public class Renderer {
         if (vfxActive) {
             postProcessing(g);
         }
+
+        window.getBufferStrategy()
+                .getDrawGraphics()
+                .drawImage(buffer, 0, 0, window.getWidth(), window.getHeight(),
+                        0, 0, buffer.getWidth(), buffer.getHeight(),
+                        null);
+        window.getBufferStrategy().show();
+
         if (app.getHelpDisplay()) {
             drawHelpText(g, scene);
         }
@@ -110,4 +123,9 @@ public class Renderer {
     public boolean getVFX() {
         return this.vfxActive;
     }
+
+    public BufferedImage getRenderingBuffer() {
+        return buffer;
+    }
+
 }

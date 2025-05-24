@@ -32,8 +32,8 @@ public class Camera extends Entity {
         return this;
     }
 
-
-    public void update(double deltaTime) {
+    @Override
+    public void update(long deltaTime) {
         if (target != null) {
 
             double targetX = (target.getX() - (getWidth() - target.getWidth()) * 0.5);

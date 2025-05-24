@@ -145,7 +145,8 @@ public class App extends JPanel {
                 });
 
         if (Optional.ofNullable(scene.getActiveCamera()).isPresent()) {
-            scene.getActiveCamera().update(elapsed);
+            Camera cam = scene.getActiveCamera();
+            cam.update(elapsed);
         }
     }
 
@@ -175,13 +176,8 @@ public class App extends JPanel {
     }
 
     public void render() {
-        BufferStrategy bs = window.getBufferStrategy();
-        Graphics2D g = (Graphics2D) bs.getDrawGraphics();
         Scene scene = AbstractScene.getCurrentScene();
-        renderer.draw(g, scene);
-
-        g.dispose();
-        bs.show();
+        renderer.draw(null, scene);
     }
 
     private void dispose() {
@@ -240,4 +236,5 @@ public class App extends JPanel {
     public InputHandler getInputHandler() {
         return inputHandler;
     }
+
 }

@@ -1,9 +1,9 @@
 package tutorials.weather;
 
 import tutorials.Entity;
-import tutorials.World;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -11,18 +11,18 @@ import java.util.Random;
 public class SnowWeatherEffect extends Entity implements WeatherEffect {
     public List<SnowFlake> snowflakes = new ArrayList<>();
 
-    private World world;
+    private BufferedImage bufferedImage;
 
-    public SnowWeatherEffect(String name, World world, int nb) {
+    public SnowWeatherEffect(String name, BufferedImage bufferedImage, int nb) {
         super(name);
-        this.world = world;
+        this.bufferedImage = bufferedImage;
         for (int i = 0; i < nb; i++)
-            snowflakes.add(new SnowFlake((int) world.getWidth(), (int) world.getHeight(), new Random()));
+            snowflakes.add(new SnowFlake((int) bufferedImage.getWidth(), (int) bufferedImage.getHeight(), new Random()));
     }
 
     @Override
     public void update(long elapsed) {
-        for (SnowFlake f : snowflakes) f.update((int) world.getWidth(), (int) world.getHeight(), elapsed);
+        for (SnowFlake f : snowflakes) f.update((int) bufferedImage.getWidth(), (int) bufferedImage.getHeight(), elapsed);
     }
 
     @Override

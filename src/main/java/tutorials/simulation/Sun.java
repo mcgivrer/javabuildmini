@@ -17,6 +17,8 @@ public class Sun extends Entity {
     public Sun(String name) {
         super(name);
         setSize(80, 80);
+        setStickToViewport(true);
+
     }
 
     public Sun setWorld(World w) {
@@ -53,11 +55,11 @@ public class Sun extends Entity {
 
         // 4. Position horizontale et verticale
         if (heure < lever || heure > coucher)
-            return new Point((int)world.getWidth() / 2, (int)world.getHeight()+(height*2)); // Soleil caché
+            return new Point((int) world.getWidth() / 2, (int) world.getHeight() + (height * 2)); // Soleil caché
 
         float progression = (heure - lever) / (coucher - lever);
-        int x = (int)world.getWidth() / 2 + (int) (width * 0.3 * Math.sin(progression * Math.PI - Math.PI / 2));
-        int y = (int) ((int)world.getHeight() * 1.0 - world.getHeight() * 0.8 * Math.cos(delta) * Math.sin(progression * Math.PI));
+        int x = (int) world.getWidth() / 2 + (int) (width * 0.3 * Math.sin(progression * Math.PI - Math.PI / 2));
+        int y = (int) ((int) world.getHeight() * 1.0 - world.getHeight() * 0.8 * Math.cos(delta) * Math.sin(progression * Math.PI));
 
         return new Point(x, y);
     }
