@@ -70,12 +70,12 @@ public class DemoScene extends AbstractScene implements Scene {
                 (window.getHeight() - 24) * 0.5,
                 32,
                 48)
-                .setMass(80.0)
+                .setMass(20.0)
                 .setMaterial(Material.PLASTIC)
                 .setPriority(5)
                 .setShape(new Rectangle2D.Double())
                 .add((app, e, deltaTime) -> {
-                    double step = 10.5;
+                    double step = 30.5;
                     if (isKeyPressed(KeyEvent.VK_UP)) {
                         e.addVelocity(0, -step * 5);
                     }
@@ -136,7 +136,7 @@ public class DemoScene extends AbstractScene implements Scene {
                         app.getRenderer().getRenderingBuffer().getWidth(),
                         app.getRenderer().getRenderingBuffer().getHeight())
                 .setTarget(player)
-                .setTweenFactor(0.002));
+                .setTweenFactor(0.02));
 
         Log.info(this.getClass(), "End of Initialization.");
 

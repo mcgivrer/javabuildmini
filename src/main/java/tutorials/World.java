@@ -33,6 +33,12 @@ public class World extends Entity {
         return this;
     }
 
+    @Override
+    public void draw(Graphics2D g) {
+        g.setColor(Color.BLACK);
+        g.fillRect((int) -getWidth(), (int) getHeight(), (int) (3 * getWidth()), 200);
+    }
+
     public Point2D getGravity() {
         return gravity;
     }
