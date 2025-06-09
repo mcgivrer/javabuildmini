@@ -55,7 +55,7 @@ An integrated logging system that provides:
 Example log format:
 
 ```
-2024-03-21T10:30:00+01:00;tutorials.App;INFO;Message
+2024-03-21T10:30:00+01:00;tutorials.core.App;INFO;Message
 ``` 
 
 ## Usage
